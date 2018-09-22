@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import Link from 'umi/link';
-import { Checkbox, Alert, Icon } from 'antd';
+// import Link from 'umi/link';
+// import { Checkbox, Alert, Icon } from 'antd';
+import { Checkbox, Alert } from 'antd';
 import Login from '@/components/Login';
 import styles from './Login.less';
 
@@ -104,7 +105,7 @@ class LoginPage extends Component {
             </a>
           </div>
           <Submit loading={submitting}>登录</Submit>
-          <div className={styles.other}>
+          {/* <div className={styles.other}>
             其他登录方式
             <Icon type="alipay-circle" className={styles.icon} theme="outlined" />
             <Icon type="taobao-circle" className={styles.icon} theme="outlined" />
@@ -112,7 +113,7 @@ class LoginPage extends Component {
             <Link className={styles.register} to="/User/Register">
               注册账户
             </Link>
-          </div>
+          </div> */}
         </Login>
       </div>
     );
