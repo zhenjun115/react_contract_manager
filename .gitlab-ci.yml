@@ -1,0 +1,13 @@
+before_script:
+  - apt-get update -qq && apt-get install -y -qq nodejs
+  - node -v
+  - which node
+  - npm run start --jobs $(nproc)  "${FLAGS[@]}"
+
+rspec:
+  script:
+    - bundle exec rspec
+
+rubocop:
+  script:
+    - bundle exec rubocop
