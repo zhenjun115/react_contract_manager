@@ -18,8 +18,23 @@ export default [
     authority: ['admin', 'user'],
     routes: [
       // dashboard
-      { path: '/', redirect: '/dashboard/analysis' },
+      // { path: '/', redirect: '/dashboard/analysis' },
+      { path: '/', redirect: '/dashboard/workplace' },
       {
+        path: '/dashboard',
+        name: 'dashboard',
+        // icon: 'dashboard',
+        icon: 'home',
+        routes: [
+          {
+            path: '/dashboard/workplace',
+            name: 'workplace',
+            component: './Dashboard/Workplace',
+            hideInMenu: true,
+          },
+        ],
+      },
+      /* {
         path: '/dashboard',
         name: 'dashboard',
         icon: 'dashboard',
@@ -40,7 +55,7 @@ export default [
             component: './Dashboard/Workplace',
           },
         ],
-      },
+      }, */
       // forms
       {
         path: '/form',

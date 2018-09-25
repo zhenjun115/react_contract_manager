@@ -4,43 +4,46 @@ import { connect } from 'dva';
 import Link from 'umi/link';
 import { Row, Col, Card, List, Avatar } from 'antd';
 
-import { Radar } from '@/components/Charts';
+// import { Radar } from '@/components/Charts';
 import EditableLinkGroup from '@/components/EditableLinkGroup';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import styles from './Workplace.less';
 
-const links = [
-  {
-    title: '操作一',
-    href: '',
-  },
-  {
-    title: '操作二',
-    href: '',
-  },
-  {
-    title: '操作三',
-    href: '',
-  },
-  {
-    title: '操作四',
-    href: '',
-  },
-  {
-    title: '操作五',
-    href: '',
-  },
-  {
-    title: '操作六',
-    href: '',
-  },
-];
+// const links = [
+//   {
+//     title: '操作一',
+//     href: '',
+//   },
+//   {
+//     title: '操作二',
+//     href: '',
+//   },
+//   {
+//     title: '操作三',
+//     href: '',
+//   },
+//   {
+//     title: '操作四',
+//     href: '',
+//   },
+//   {
+//     title: '操作五',
+//     href: '',
+//   },
+//   {
+//     title: '操作六',
+//     href: '',
+//   },
+// ];
 
-@connect(({ user, project, activities, chart, loading }) => ({
+@connect(({ user, project, activities, contract, chart, loading, setting }) => ({
   currentUser: user.currentUser,
   project,
   activities,
+  carryout: contract.carryout,
+  progress: contract.progress,
+  shortcutAction: setting.shortcutAction,
   chart,
   currentUserLoading: loading.effects['user/fetchCurrent'],
   projectLoading: loading.effects['project/fetchNotice'],
@@ -61,6 +64,15 @@ class Workplace extends PureComponent {
     dispatch({
       type: 'chart/fetch',
     });
+    dispatch({
+      type: 'contract/fetchCarryout',
+    });
+    dispatch({
+      type: 'contract/fetchProgress',
+    });
+    // dispatch( {
+    //   type: 'setting/getShortcutAction'
+    // })
   }
 
   componentWillUnmount() {
@@ -108,35 +120,39 @@ class Workplace extends PureComponent {
   }
 
   render() {
+    // console.log( this.props.contract );
     const {
-      currentUser,
+      // currentUser,
       currentUserLoading,
-      project: { notice },
+      // project: { notice },
+      carryout,
+      progress,
+      shortcutAction,
       projectLoading,
       activitiesLoading,
-      chart: { radarData },
+      // chart: { radarData },
     } = this.props;
 
-    const pageHeaderContent =
-      currentUser && Object.keys(currentUser).length ? (
-        <div className={styles.pageHeaderContent}>
-          <div className={styles.avatar}>
-            <Avatar size="large" src={currentUser.avatar} />
-          </div>
-          <div className={styles.content}>
-            <div className={styles.contentTitle}>
-              早安，
-              {currentUser.name}
-              ，祝你开心每一天！
-            </div>
-            <div>
-              {currentUser.title} |{currentUser.group}
-            </div>
-          </div>
-        </div>
-      ) : null;
+    // const pageHeaderContent =
+    //   currentUser && Object.keys(currentUser).length ? (
+    //     <div className={styles.pageHeaderContent}>
+    //       <div className={styles.avatar}>
+    //         <Avatar size="large" src={currentUser.avatar} />
+    //       </div>
+    //       <div className={styles.content}>
+    //         <div className={styles.contentTitle}>
+    //           早安，
+    //           {currentUser.name}
+    //           ，祝你开心每一天！
+    //         </div>
+    //         <div>
+    //           {currentUser.title} |{currentUser.group}
+    //         </div>
+    //       </div>
+    //     </div>
+    //   ) : null;
 
-    const extraContent = (
+    /* const extraContent = (
       <div className={styles.extraContent}>
         <div className={styles.statItem}>
           <p>项目数</p>
@@ -153,39 +169,38 @@ class Workplace extends PureComponent {
           <p>2,223</p>
         </div>
       </div>
-    );
+    ); */
 
     return (
       <PageHeaderWrapper
         loading={currentUserLoading}
-        content={pageHeaderContent}
-        extraContent={extraContent}
+        // content={pageHeaderContent}
       >
         <Row gutter={24}>
           <Col xl={16} lg={24} md={24} sm={24} xs={24}>
             <Card
               className={styles.projectList}
               style={{ marginBottom: 24 }}
-              title="进行中的项目"
+              title="订立中"
               bordered={false}
-              extra={<Link to="/">全部项目</Link>}
+              extra={<Link to="/">全部</Link>}
               loading={projectLoading}
               bodyStyle={{ padding: 0 }}
             >
-              {notice.map(item => (
+              {progress.map(item => (
                 <Card.Grid className={styles.projectGrid} key={item.id}>
                   <Card bodyStyle={{ padding: 0 }} bordered={false}>
                     <Card.Meta
                       title={
                         <div className={styles.cardTitle}>
-                          <Avatar size="small" src={item.logo} />
+                          {/* <Avatar size="small" src={item.logo} /> */}
                           <Link to={item.href}>{item.title}</Link>
                         </div>
                       }
                       description={item.description}
                     />
                     <div className={styles.projectItemContent}>
-                      <Link to={item.memberLink}>{item.member || ''}</Link>
+                      {/* <Link to={item.memberLink}>{item.member || ''}</Link> */}
                       {item.updatedAt && (
                         <span className={styles.datetime} title={item.updatedAt}>
                           {moment(item.updatedAt).fromNow()}
@@ -197,15 +212,37 @@ class Workplace extends PureComponent {
               ))}
             </Card>
             <Card
-              bodyStyle={{ padding: 0 }}
+              className={styles.projectList}
+              style={{ marginBottom: 24 }}
+              title="履行中"
               bordered={false}
-              className={styles.activeCard}
-              title="动态"
-              loading={activitiesLoading}
+              extra={<Link to="/">全部</Link>}
+              loading={projectLoading}
+              bodyStyle={{ padding: 0 }}
             >
-              <List loading={activitiesLoading} size="large">
-                <div className={styles.activitiesList}>{this.renderActivities()}</div>
-              </List>
+              {carryout.map(item => (
+                <Card.Grid className={styles.projectGrid} key={item.id}>
+                  <Card bodyStyle={{ padding: 0 }} bordered={false}>
+                    <Card.Meta
+                      title={
+                        <div className={styles.cardTitle}>
+                          {/* <Avatar size="small" src={item.logo} /> */}
+                          <Link to={item.href}>{item.title}</Link>
+                        </div>
+                      }
+                      description={item.description}
+                    />
+                    <div className={styles.projectItemContent}>
+                      {/* <Link to={item.memberLink}>{item.member || ''}</Link> */}
+                      {item.updatedAt && (
+                        <span className={styles.datetime} title={item.updatedAt}>
+                          {moment(item.updatedAt).fromNow()}
+                        </span>
+                      )}
+                    </div>
+                  </Card>
+                </Card.Grid>
+              ))}
             </Card>
           </Col>
           <Col xl={8} lg={24} md={24} sm={24} xs={24}>
@@ -215,9 +252,20 @@ class Workplace extends PureComponent {
               bordered={false}
               bodyStyle={{ padding: 0 }}
             >
-              <EditableLinkGroup onAdd={() => {}} links={links} linkElement={Link} />
+              <EditableLinkGroup onAdd={() => {}} links={shortcutAction} linkElement={Link} />
             </Card>
             <Card
+              bodyStyle={{ marginBottom: 24 }}
+              bordered={false}
+              className={styles.activeCard}
+              title="动态"
+              loading={activitiesLoading}
+            >
+              <List loading={activitiesLoading} size="large">
+                <div className={styles.activitiesList}>{this.renderActivities()}</div>
+              </List>
+            </Card>
+            {/* <Card
               style={{ marginBottom: 24 }}
               bordered={false}
               title="XX 指数"
@@ -226,8 +274,8 @@ class Workplace extends PureComponent {
               <div className={styles.chart}>
                 <Radar hasLegend height={343} data={radarData} />
               </div>
-            </Card>
-            <Card
+            </Card> */}
+            {/* <Card
               bodyStyle={{ paddingTop: 12, paddingBottom: 12 }}
               bordered={false}
               title="团队"
@@ -245,7 +293,7 @@ class Workplace extends PureComponent {
                   ))}
                 </Row>
               </div>
-            </Card>
+                  </Card> */}
           </Col>
         </Row>
       </PageHeaderWrapper>

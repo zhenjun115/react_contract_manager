@@ -119,5 +119,11 @@ export default {
         ...payload,
       };
     },
+    getShortcutAction(state) {
+      return {
+        ...state,
+        ...defaultSettings.shortcutAction,
+      };
+    },
   },
 };

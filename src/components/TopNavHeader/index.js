@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import Link from 'umi/link';
+// import Link from 'umi/link';
 import RightContent from '../GlobalHeader/RightContent';
 import BaseMenu from '../SiderMenu/BaseMenu';
 import styles from './index.less';
@@ -20,7 +20,7 @@ export default class TopNavHeader extends PureComponent {
   }
 
   render() {
-    const { theme, contentWidth, logo } = this.props;
+    const { theme, contentWidth } = this.props;
     const { maxWidth } = this.state;
     return (
       <div className={`${styles.head} ${theme === 'light' ? styles.light : ''}`}>
@@ -31,12 +31,12 @@ export default class TopNavHeader extends PureComponent {
           className={`${styles.main} ${contentWidth === 'Fixed' ? styles.wide : ''}`}
         >
           <div className={styles.left}>
-            <div className={styles.logo} key="logo" id="logo">
+            {/* <div className={styles.logo} key="logo" id="logo">
               <Link to="/">
                 <img src={logo} alt="logo" />
                 <h1>Ant Design Pro</h1>
               </Link>
-            </div>
+            </div> */}
             <div
               style={{
                 maxWidth,

@@ -232,7 +232,7 @@ const getActivities = [
       name: '六月迭代',
       link: 'http://github.com/',
     },
-    template: '在 @{group} 新建项目 @{project}',
+    template: '新建合同 @{project}',
   },
   {
     id: 'trend-2',
@@ -249,7 +249,7 @@ const getActivities = [
       name: '六月迭代',
       link: 'http://github.com/',
     },
-    template: '在 @{group} 新建项目 @{project}',
+    template: '新建合同 @{project}',
   },
   {
     id: 'trend-3',
@@ -266,7 +266,7 @@ const getActivities = [
       name: '六月迭代',
       link: 'http://github.com/',
     },
-    template: '在 @{group} 新建项目 @{project}',
+    template: '新建合同模版 @{project}',
   },
   {
     id: 'trend-4',
@@ -313,7 +313,7 @@ const getActivities = [
       name: '品牌迭代',
       link: 'http://github.com/',
     },
-    template: '在 @{group} 新建项目 @{project}',
+    template: '审批了合同 @{project}',
   },
 ];
 
