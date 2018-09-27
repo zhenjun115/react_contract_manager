@@ -9,4 +9,4 @@ npm_build:
 npm_deploy:
     stage: deploy
     script:
-        - npm start 
+        - npm run start 
