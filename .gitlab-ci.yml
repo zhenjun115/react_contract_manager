@@ -4,8 +4,8 @@ before_script:
 npm_build:
     stage: build
     script:
-        - npm install
-        - npm run build 
+        - sudo npm install
+        - npm run build
 
 npm_deploy:
     stage: deploy
