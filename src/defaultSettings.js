@@ -10,7 +10,7 @@ module.exports = {
   shortcutAction: [
     {
       title: '人事合同',
-      href: '/form/step-form',
+      href: '/contract/template',
     },
     {
       title: '劳务合同',

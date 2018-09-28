@@ -4,9 +4,11 @@ before_script:
 npm_build:
     stage: build
     script:
-        - npm build 
+        - npm run build 
 
 npm_deploy:
     stage: deploy
     script:
-        - npm run start 
+        - cd /opt/demo
+        - git checkout develop
+        - git pull

@@ -56,7 +56,7 @@ const progress = [
     updatedAt: new Date(),
     typeName: '人事合同',
     type: '1',
-    href: '/result/success',
+    href: 'contract/status',
     memberLink: '',
   },
   {

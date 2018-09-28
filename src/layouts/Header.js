@@ -57,6 +57,7 @@ class HeaderView extends PureComponent {
       return;
     }
     if (key === 'triggerError') {
+      console.log('triggerError');
       router.push('/exception/trigger');
       return;
     }
@@ -69,6 +70,7 @@ class HeaderView extends PureComponent {
         type: 'login/logout',
       });
     }
+    console.log(key);
   };
 
   handleNoticeVisibleChange = visible => {
