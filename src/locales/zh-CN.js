@@ -4,6 +4,7 @@ export default {
   'navbar.lang': 'English',
   'menu.home': '首页',
   'menu.contract': '合同管理',
+  'menu.contract.create': '新建合同',
   'menu.dashboard': '操作台',
   'menu.dashboard.analysis': '分析页',
   'menu.dashboard.monitor': '监控页',
