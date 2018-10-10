@@ -20,8 +20,9 @@ export default [
       // dashboard
       // { path: '/', redirect: '/dashboard/analysis' },
       { path: '/', redirect: '/dashboard/workplace' },
-      { path: '/contract/template', component: './contract/Template' },
-      { path: '/contract/create', component: './contract/StepForm' },
+      { path: '/contract/template/:type', component: './contract/Template' },
+      { path: '/contract/template/', component: './contract/Template' },
+      { path: '/contract/create/:type/:id', component: './contract/StepForm' },
       {
         path: '/dashboard',
         name: 'dashboard',
@@ -34,7 +35,6 @@ export default [
             component: './Dashboard/Workplace',
             hideInMenu: true,
           },
-
           {
             path: 'contract/status',
             component: './Dashboard/Status',

@@ -25,6 +25,8 @@ class TagSelect extends Component {
       expand: false,
       value: props.value || props.defaultValue || [],
     };
+
+    // console.info( this.state.value );
   }
 
   static getDerivedStateFromProps(nextProps) {

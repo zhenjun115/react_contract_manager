@@ -33,13 +33,15 @@ const pageSize = 5;
 })
 class SearchList extends Component {
   componentDidMount() {
-    const { dispatch } = this.props;
+    // console.info( this.props.match );
+    const { dispatch, form, match } = this.props;
     dispatch({
       type: 'list/fetch',
       payload: {
         count: 5,
       },
     });
+    form.setFieldsValue({ category: match.params.type });
   }
 
   setOwner = () => {
@@ -64,6 +66,7 @@ class SearchList extends Component {
       form,
       list: { list },
       loading,
+      // match
     } = this.props;
     const { getFieldDecorator } = form;
 
@@ -132,8 +135,8 @@ class SearchList extends Component {
         </div>
       ) : null;
 
-    const createContract = () => {
-      router.push('/contract/create');
+    const createContract = (type, id) => {
+      router.push(`/contract/create/${type}/${id}`);
     };
 
     return (
@@ -154,8 +157,8 @@ class SearchList extends Component {
                     <TagSelect.Option value="cat8">对赌协议</TagSelect.Option>
                     <TagSelect.Option value="cat9">施工合同</TagSelect.Option>
                     <TagSelect.Option value="cat10">合作协议</TagSelect.Option>
-                    <TagSelect.Option value="cat10">其他一</TagSelect.Option>
-                    <TagSelect.Option value="cat10">其他二</TagSelect.Option>
+                    <TagSelect.Option value="cat11">其他一</TagSelect.Option>
+                    <TagSelect.Option value="cat12">其他二</TagSelect.Option>
                   </TagSelect>
                 )}
               </FormItem>

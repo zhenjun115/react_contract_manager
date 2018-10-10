@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import moment from 'moment';
 import { connect } from 'dva';
 import Link from 'umi/link';
+import router from 'umi/router';
 import { Row, Col, Card, List, Avatar } from 'antd';
 
 // import { Radar } from '@/components/Charts';
@@ -252,7 +253,13 @@ class Workplace extends PureComponent {
               bordered={false}
               bodyStyle={{ padding: 0 }}
             >
-              <EditableLinkGroup onAdd={() => {}} links={shortcutAction} linkElement={Link} />
+              <EditableLinkGroup
+                onAdd={() => {
+                  router.push('/contract/template');
+                }}
+                links={shortcutAction}
+                linkElement={Link}
+              />
             </Card>
             <Card
               bodyStyle={{ marginBottom: 24 }}

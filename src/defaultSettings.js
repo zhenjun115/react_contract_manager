@@ -10,11 +10,11 @@ module.exports = {
   shortcutAction: [
     {
       title: '人事合同',
-      href: '/contract/template',
+      href: '/contract/template/cat1',
     },
     {
       title: '劳务合同',
-      href: '',
+      href: '/contract/template/cat2',
     },
     {
       title: '租赁合同',
