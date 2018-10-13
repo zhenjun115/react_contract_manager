@@ -1,8 +1,10 @@
 import React, { PureComponent } from 'react';
-// import Link from 'umi/link';
+import Link from 'umi/link';
+// import { Icon } from 'antd';
 import RightContent from '../GlobalHeader/RightContent';
 import BaseMenu from '../SiderMenu/BaseMenu';
 import styles from './index.less';
+import logo from '../../assets/logo.svg';
 
 export default class TopNavHeader extends PureComponent {
   constructor(props) {
@@ -31,12 +33,14 @@ export default class TopNavHeader extends PureComponent {
           className={`${styles.main} ${contentWidth === 'Fixed' ? styles.wide : ''}`}
         >
           <div className={styles.left}>
-            {/* <div className={styles.logo} key="logo" id="logo">
+            <div className={styles.logo} key="logo" id="logo">
               <Link to="/">
+                {/* <Icon type="home" /> */}
+                {/* <span>主页</span> */}
                 <img src={logo} alt="logo" />
-                <h1>Ant Design Pro</h1>
+                <h1>首页</h1>
               </Link>
-            </div> */}
+            </div>
             <div
               style={{
                 maxWidth,

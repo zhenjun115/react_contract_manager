@@ -23,24 +23,8 @@ export default [
       { path: '/contract/template/:type', component: './contract/Template' },
       { path: '/contract/template/', component: './contract/Template' },
       { path: '/contract/create/:type/:id', component: './contract/StepForm' },
-      {
-        path: '/dashboard',
-        name: 'dashboard',
-        // icon: 'dashboard',
-        icon: 'home',
-        routes: [
-          {
-            path: '/dashboard/workplace',
-            name: 'workplace',
-            component: './Dashboard/Workplace',
-            hideInMenu: true,
-          },
-          {
-            path: 'contract/status',
-            component: './Dashboard/Status',
-          },
-        ],
-      },
+      { path: '/dashboard/workplace', component: './Dashboard/Workplace' },
+      { path: '/dashboard/contract/status', component: './Dashboard/Status' },
       /* {
         path: '/dashboard',
         name: 'dashboard',

@@ -1,7 +1,7 @@
 import React, { PureComponent, Fragment } from 'react';
 import { Card, Steps, Row, Col, Form, Input, Upload, Collapse, Icon, Button } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import styles from './StepForm.less';
+// import styles from './StepForm.less';
 
 // import { Route, Redirect, Switch } from 'dva/router';
 // import { getRoutes } from '@/utils/utils';
@@ -30,11 +30,10 @@ export default class StepForm extends PureComponent {
         <Row gutter={24}>
           <Col xl={3} lg={3} md={3} sm={16} xs={4}>
             <Fragment>
-              <Steps current={this.getCurrentStep()} className={styles.steps} direction="vertical">
-                <Steps.Step title="填写基础信息" />
-                <Steps.Step title="上传附件信息" />
-                {/* <Step title="确认信息完整" /> */}
-                <Steps.Step title="完成" />
+              <Steps current={this.getCurrentStep()} direction="vertical">
+                <Steps.Step title="基础信息" />
+                <Steps.Step title="附件信息" />
+                <Steps.Step title="操作完成" />
               </Steps>
             </Fragment>
           </Col>
