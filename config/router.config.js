@@ -22,7 +22,8 @@ export default [
       { path: '/', redirect: '/dashboard/workplace' },
       { path: '/contract/template/:type', component: './contract/Template' },
       { path: '/contract/template/', component: './contract/Template' },
-      { path: '/contract/create/:type/:id', component: './contract/StepForm' },
+      { path: '/contract/create', redirect: '/contract/template' },
+      { path: '/contract/create/:templateId', component: './contract/StepForm' },
       { path: '/dashboard/workplace', component: './Dashboard/Workplace' },
       { path: '/dashboard/contract/status', component: './Dashboard/Status' },
       /* {

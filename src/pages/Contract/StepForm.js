@@ -24,9 +24,9 @@ export default class StepForm extends PureComponent {
   }
 
   render() {
-    const { location } = this.props;
+    // const { location } = this.props;
     return (
-      <PageHeaderWrapper tabActiveKey={location.pathname}>
+      <PageHeaderWrapper>
         <Row gutter={24}>
           <Col xl={3} lg={3} md={3} sm={16} xs={4}>
             <Fragment>

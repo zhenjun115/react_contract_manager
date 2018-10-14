@@ -61,6 +61,10 @@ class SearchList extends Component {
     });
   };
 
+  createContract = templateId => {
+    router.push(`/contract/create/${templateId}`);
+  };
+
   render() {
     const {
       form,
@@ -134,10 +138,6 @@ class SearchList extends Component {
           </Button>
         </div>
       ) : null;
-
-    const createContract = (type, id) => {
-      router.push(`/contract/create/${type}/${id}`);
-    };
 
     return (
       <Fragment>
@@ -233,7 +233,7 @@ class SearchList extends Component {
                   // <IconText type="like-o" text={item.like} />,
                   // <IconText type="message" text={item.message} />,
                   // <Button>使用模版</Button>
-                  <Button type="primary" onClick={createContract}>
+                  <Button type="primary" onClick={() => this.createContract(item.id)}>
                     使用模版
                   </Button>,
                 ]}
