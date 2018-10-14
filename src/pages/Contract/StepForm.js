@@ -1,5 +1,6 @@
 import React, { PureComponent, Fragment } from 'react';
 import { Card, Steps, Row, Col, Form, Input, Upload, Collapse, Icon, Button } from 'antd';
+import router from 'umi/router';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 // import styles from './StepForm.less';
 
@@ -22,6 +23,10 @@ export default class StepForm extends PureComponent {
         return 0;
     }
   }
+
+  mockSaveResult = contractId => {
+    router.push(`/contract/status/${contractId}`);
+  };
 
   render() {
     // const { location } = this.props;
@@ -146,7 +151,10 @@ export default class StepForm extends PureComponent {
             {/* </Card> */}
 
             <Card bordered={false}>
-              <Button type="primary">保存</Button> <Button type="default">重置</Button>
+              <Button type="primary" onClick={() => this.mockSaveResult('fake_contract_00')}>
+                保存
+              </Button>{' '}
+              <Button type="default">重置</Button>
             </Card>
           </Col>
         </Row>
