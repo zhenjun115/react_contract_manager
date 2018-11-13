@@ -1,13 +1,48 @@
-import React, { PureComponent, Fragment } from 'react';
-import { Card, Steps, Row, Col, Form, Input, Upload, Collapse, Icon, Button } from 'antd';
+import React, { PureComponent } from 'react';
+import {
+  Card,
+  Form,
+  Input,
+  Icon,
+  Button,
+  Tree,
+  Tabs,
+  Skeleton,
+  Upload,
+  Progress,
+  message,
+} from 'antd';
 import router from 'umi/router';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-// import styles from './StepForm.less';
+import './StepForm.less';
 
 // import { Route, Redirect, Switch } from 'dva/router';
 // import { getRoutes } from '@/utils/utils';
+const { DirectoryTree, TreeNode } = Tree;
+// const { TreeNode } = Tree
+const { TabPane } = Tabs;
+
+message.config({
+  top: 100,
+});
 
 export default class StepForm extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      file: {
+        cat: '-1',
+      },
+      /* fileList: {
+        '0-0': [{ name: 'test', uid: '1' }],
+        '0-1': [],
+        '1-0': [],
+        '1-1': [],
+        test: [],
+      }, */
+    };
+  }
+
   getCurrentStep() {
     const { location } = this.props;
     const { pathname } = location;
@@ -28,22 +63,61 @@ export default class StepForm extends PureComponent {
     router.push(`/contract/status/${contractId}`);
   };
 
+  uploadFile = () => {
+    console.log('upload file');
+  };
+
+  handleChange = change => {
+    if (change.file.status === 'done') {
+      // console.log( change.file );
+      // let list = this.state.fileList['0-0']
+      // const list = this.state.fileList
+      // list['0-0'].push( change.file )
+      const { file } = change;
+      this.setState(state => ({
+        fileList: {
+          '0-0': state.fileList['0-0'].concat([file]),
+        },
+      }));
+      // console.log( this.state.fileList );
+    }
+  };
+
+  beforeUpload = () => {
+    // console.log( file );
+    let next = false;
+    const { file } = this.state;
+    // console.log( this.state.file.cat );
+    if (file.cat === '-1') {
+      message.error('未知的附近类型');
+      // console.log( this.state.file.cat );
+      next = false;
+    } else {
+      message.loading('上传中');
+      next = true;
+    }
+
+    return next;
+  };
+
+  onSelectTreeNode = (selectedKeys, e) => {
+    if (!e.selected) {
+      // this.setState((state, props) => ({ file: { cat: '-1' } }));
+      // return;
+    } else if (!e.isLeaf) {
+      // this.setState((state, props) => ({ file: { cat: selectedKeys } }));
+    }
+  };
+
+  // const antIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
+
   render() {
     // const { location } = this.props;
+    // const { fileList } = this.state;
     return (
       <PageHeaderWrapper>
-        <Row gutter={24}>
-          <Col xl={3} lg={3} md={3} sm={16} xs={4}>
-            <Fragment>
-              <Steps current={this.getCurrentStep()} direction="vertical">
-                <Steps.Step title="基础信息" />
-                <Steps.Step title="附件信息" />
-                <Steps.Step title="操作完成" />
-              </Steps>
-            </Fragment>
-          </Col>
-
-          <Col xl={21} lg={21} md={21} sm={16} xs={20}>
+        <Tabs type="card">
+          <TabPane tab="基本信息" key="1">
             <Card bordered={false} style={{ marginBottom: 24 }}>
               <Form>
                 <Form.Item
@@ -69,95 +143,79 @@ export default class StepForm extends PureComponent {
                   <br />
                   <Input placeholder="通讯地址" />
                 </Form.Item>
+                <Form.Item>
+                  <Button type="primary" onClick={() => this.mockSaveResult('fake_contract_00')}>
+                    保存
+                  </Button>{' '}
+                  <Button type="default">重置</Button>
+                </Form.Item>
               </Form>
             </Card>
+          </TabPane>
+          <TabPane tab="附件文件" key="2">
+            <Card>
+              <Upload
+                name="file"
+                listType="picture-card"
+                showUploadList={false}
+                action="http://127.0.0.1:9090/file/upload"
+                multiple={false}
+                className="uploadBar"
+                onChange={this.handleChange}
+                beforeUpload={this.beforeUpload}
+                // data={this.state.file}
+              >
+                <div>
+                  {/* { this.state.file.uploading ? <Spin indicator={antIcon} /> : <Icon type='plus' /> } */}
+                  <Icon type="plus" />
+                </div>
+              </Upload>
 
-            {/* <Card bordered={false} style={{marginBottom: 24}}> */}
-            <Form layout="vertical" style={{ marginBottom: 24 }}>
-              <Collapse defaultActiveKey={['1']}>
-                <Collapse.Panel header="合同复印件" key="1">
-                  <Form.Item labelCol={{ lg: { span: 24 } }} wrapperCol={{ lg: { span: 24 } }}>
-                    <Upload.Dragger name="" action="upload.do">
-                      <p className="ant-upload-drag-icon">
-                        <Icon type="inbox" />
-                      </p>
-                      <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                      <p className="ant-upload-hint">Support for a single or bulk upload.</p>
-                    </Upload.Dragger>
-                  </Form.Item>
-                </Collapse.Panel>
+              <DirectoryTree
+                multiple
+                defaultExpandedKeys={['0-0']}
+                onSelect={this.onSelectTreeNode}
+                // onExpand={this.onExpand}
+              >
+                <TreeNode title="合同文件" key="0-0">
+                  {/* <TreeNode title="leaf 0-0" key="0-0-0" isLeaf /> */}
+                  {/* <TreeNode icon={<Icon type="inbox" theme="outlined" />} title="文件" key="0" isLeaf isUploadBtn /> */}
+                  {/* {this.state.fileList['0-0'].map(file => {
+                    return <TreeNode title={file.name} key={file.uid} isLeaf />;
+                  })} */}
+                </TreeNode>
+                <TreeNode title="身份文件" key="0-1" />
+                <TreeNode title="学历文件" key="1-0">
+                  {/* <TreeNode title="leaf 1-0" key="1-0-0" isLeaf /> */}
+                  {/* <TreeNode icon={<Icon type="upload" theme="outlined" />} title="文件" key="2" isLeaf isUploadBtn /> */}
+                </TreeNode>
+                <TreeNode title="其他" key="1-1">
+                  {/* <TreeNode title="leaf 1-0" key="1-1-0" isLeaf /> */}
+                  {/* <TreeNode icon={<Icon type="upload" theme="outlined" />} title="文件" key="3" isLeaf isUploadBtn /> */}
+                </TreeNode>
+              </DirectoryTree>
 
-                <Collapse.Panel header="身份证复印件" key="2">
-                  <Form.Item wrapperCol={{ lg: { span: 24 } }}>
-                    <Upload.Dragger name="" action="upload.do">
-                      <p className="ant-upload-drag-icon">
-                        <Icon type="inbox" />
-                      </p>
-                      <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                      <p className="ant-upload-hint">Support for a single or bulk upload.</p>
-                    </Upload.Dragger>
-                  </Form.Item>
-                </Collapse.Panel>
-
-                <Collapse.Panel header="学生证复印件" key="3">
-                  <Form.Item wrapperCol={{ lg: { span: 24 } }}>
-                    <Upload.Dragger name="" action="upload.do">
-                      <p className="ant-upload-drag-icon">
-                        <Icon type="inbox" />
-                      </p>
-                      <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                      <p className="ant-upload-hint">Support for a single or bulk upload.</p>
-                    </Upload.Dragger>
-                  </Form.Item>
-                </Collapse.Panel>
-
-                <Collapse.Panel header="学历证书复印件" key="4">
-                  <Form.Item wrapperCol={{ lg: { span: 24 } }}>
-                    <Upload.Dragger name="" action="upload.do">
-                      <p className="ant-upload-drag-icon">
-                        <Icon type="inbox" />
-                      </p>
-                      <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                      <p className="ant-upload-hint">Support for a single or bulk upload.</p>
-                    </Upload.Dragger>
-                  </Form.Item>
-                </Collapse.Panel>
-
-                <Collapse.Panel header="学位证书复印件" key="5">
-                  <Form.Item wrapperCol={{ lg: { span: 24 } }}>
-                    <Upload.Dragger name="" action="upload.do">
-                      <p className="ant-upload-drag-icon">
-                        <Icon type="inbox" />
-                      </p>
-                      <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                      <p className="ant-upload-hint">Support for a single or bulk upload.</p>
-                    </Upload.Dragger>
-                  </Form.Item>
-                </Collapse.Panel>
-
-                <Collapse.Panel header="其他" key="6">
-                  <Form.Item wrapperCol={{ lg: { span: 24 } }}>
-                    <Upload.Dragger name="" action="upload.do">
-                      <p className="ant-upload-drag-icon">
-                        <Icon type="inbox" />
-                      </p>
-                      <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                      <p className="ant-upload-hint">Support for a single or bulk upload.</p>
-                    </Upload.Dragger>
-                  </Form.Item>
-                </Collapse.Panel>
-              </Collapse>
-            </Form>
-            {/* </Card> */}
-
-            <Card bordered={false}>
-              <Button type="primary" onClick={() => this.mockSaveResult('fake_contract_00')}>
-                保存
-              </Button>{' '}
-              <Button type="default">重置</Button>
+              <Progress percent={0} />
             </Card>
-          </Col>
-        </Row>
+          </TabPane>
+          <TabPane tab="合同变更" key="3">
+            <Card>
+              <Skeleton avatar paragraph={{ rows: 4 }} />
+            </Card>
+          </TabPane>
+          <TabPane tab="审批历史" key="4">
+            <Card>
+              <Skeleton avatar paragraph={{ rows: 4 }} />
+              <Skeleton avatar paragraph={{ rows: 4 }} />
+              <Skeleton avatar paragraph={{ rows: 4 }} />
+            </Card>
+          </TabPane>
+          <TabPane tab="其他" key="5">
+            <Card>
+              <Skeleton avatar paragraph={{ rows: 4 }} />
+            </Card>
+          </TabPane>
+        </Tabs>
       </PageHeaderWrapper>
     );
   }

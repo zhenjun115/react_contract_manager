@@ -1,4 +1,5 @@
 import fetch from 'dva/fetch';
+// import fetchJsonp from 'fetch-jsonp';
 import { notification } from 'antd';
 import router from 'umi/router';
 import hash from 'hash.js';
@@ -81,6 +82,7 @@ export default function request(
 
   const defaultOptions = {
     credentials: 'include',
+    // mode: "no-cors"
   };
   const newOptions = { ...defaultOptions, ...options };
   if (

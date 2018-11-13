@@ -15,7 +15,7 @@ const { Tab, UserName, Password, Mobile, Captcha, Submit } = Login;
 class LoginPage extends Component {
   state = {
     type: 'account',
-    autoLogin: true,
+    autoLogin: false,
   };
 
   onTabChange = type => {
@@ -66,6 +66,7 @@ class LoginPage extends Component {
   render() {
     const { login, submitting } = this.props;
     const { type, autoLogin } = this.state;
+    // console.log('submitting: ' + submitting);
     return (
       <div className={styles.main}>
         <Login
@@ -77,10 +78,7 @@ class LoginPage extends Component {
           }}
         >
           <Tab key="account" tab="账户密码登录">
-            {login.status === 'error' &&
-              login.type === 'account' &&
-              !submitting &&
-              this.renderMessage('账户或密码错误（admin/888888）')}
+            {login.status === 'error' && !submitting && this.renderMessage('账户或密码错误')}
             <UserName name="userName" placeholder="admin/user" />
             <Password
               name="password"
@@ -105,15 +103,6 @@ class LoginPage extends Component {
             </a>
           </div>
           <Submit loading={submitting}>登录</Submit>
-          {/* <div className={styles.other}>
-            其他登录方式
-            <Icon type="alipay-circle" className={styles.icon} theme="outlined" />
-            <Icon type="taobao-circle" className={styles.icon} theme="outlined" />
-            <Icon type="weibo-circle" className={styles.icon} theme="outlined" />
-            <Link className={styles.register} to="/User/Register">
-              注册账户
-            </Link>
-          </div> */}
         </Login>
       </div>
     );

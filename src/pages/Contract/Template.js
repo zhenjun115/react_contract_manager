@@ -1,14 +1,22 @@
 import React, { Component, Fragment } from 'react';
 // import moment from 'moment';
 import { connect } from 'dva';
-import { Form, Card, Select, List, Tag, Icon, /* Avatar, */ Row, Col, Button } from 'antd';
+import {
+  Form,
+  Card,
+  /* Select, */ List,
+  Tag,
+  Icon,
+  /* Avatar, */ Row,
+  /* Col, */ Button,
+} from 'antd';
 import router from 'umi/router';
 
 import TagSelect from '@/components/TagSelect';
 import StandardFormRow from '@/components/StandardFormRow';
 import styles from './Template.less';
 
-const { Option } = Select;
+// const { Option } = Select;
 const FormItem = Form.Item;
 
 const pageSize = 5;
@@ -18,15 +26,16 @@ const pageSize = 5;
   loading: loading.models.list,
 }))
 @Form.create({
+  // onValuesChange({ dispatch }, changedValues, allValues) {
   onValuesChange({ dispatch }, changedValues, allValues) {
     // 表单项变化时请求数据
     // eslint-disable-next-line
-    console.log(changedValues, allValues);
     // 模拟查询表单生效
     dispatch({
       type: 'list/fetch',
       payload: {
         count: 5,
+        templateCat: allValues,
       },
     });
   },
@@ -35,20 +44,23 @@ class SearchList extends Component {
   componentDidMount() {
     // console.info( this.props.match );
     const { dispatch, form, match } = this.props;
+    const payload = {};
+    if (match.params.type) {
+      payload.templateCat = match.params.type;
+      form.setFieldsValue({ category: [match.params.type] });
+    }
+
     dispatch({
       type: 'list/fetch',
-      payload: {
-        count: 5,
-      },
+      payload: Object.assign({ count: 5 }, payload),
     });
-    form.setFieldsValue({ category: match.params.type });
   }
 
   setOwner = () => {
-    const { form } = this.props;
-    form.setFieldsValue({
+    // const { form } = this.props;
+    /* form.setFieldsValue({
       owner: ['hzj'],
-    });
+    }); */
   };
 
   fetchMore = () => {
@@ -116,13 +128,13 @@ class SearchList extends Component {
       </div>
     );
 
-    const formItemLayout = {
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 24 },
-        md: { span: 12 },
-      },
-    };
+    // const formItemLayout = {
+    //   wrapperCol: {
+    //     xs: { span: 24 },
+    //     sm: { span: 24 },
+    //     md: { span: 12 },
+    //   },
+    // };
 
     const loadMore =
       list.length > 0 ? (
@@ -191,7 +203,7 @@ class SearchList extends Component {
             </StandardFormRow> */}
             <StandardFormRow title="其它选项" grid last>
               <Row gutter={16}>
-                <Col xl={8} lg={10} md={12} sm={24} xs={24}>
+                {/* <Col xl={8} lg={10} md={12} sm={24} xs={24}>
                   <FormItem {...formItemLayout} label="活跃用户">
                     {getFieldDecorator('user', {})(
                       <Select placeholder="不限" style={{ maxWidth: 200, width: '100%' }}>
@@ -208,7 +220,7 @@ class SearchList extends Component {
                       </Select>
                     )}
                   </FormItem>
-                </Col>
+                </Col> */}
               </Row>
             </StandardFormRow>
           </Form>
@@ -220,7 +232,7 @@ class SearchList extends Component {
         >
           <List
             size="large"
-            loading={list.length === 0 ? loading : false}
+            loading={loading}
             rowKey="id"
             itemLayout="vertical"
             loadMore={loadMore}

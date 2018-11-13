@@ -104,7 +104,15 @@ export async function updateFakeList(params) {
 }
 
 export async function fakeAccountLogin(params) {
-  return request('/api/login/account', {
+  return request('http://127.0.0.1:9090/login', {
+    method: 'POST',
+    body: params,
+  });
+}
+
+// restful方式执行账号登录
+export async function accountLogin(params) {
+  return request('http://127.0.0.1:8080/login', {
     method: 'POST',
     body: params,
   });
