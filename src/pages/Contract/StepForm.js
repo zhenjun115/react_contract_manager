@@ -116,7 +116,7 @@ export default class StepForm extends PureComponent {
     // const { fileList } = this.state;
     return (
       <PageHeaderWrapper>
-        <Tabs type="card">
+        <Tabs type="card" tabPosition="right">
           <TabPane tab="基本信息" key="1">
             <Card bordered={false} style={{ marginBottom: 24 }}>
               <Form>
@@ -143,7 +143,7 @@ export default class StepForm extends PureComponent {
                   <br />
                   <Input placeholder="通讯地址" />
                 </Form.Item>
-                <Form.Item>
+                <Form.Item wrapperCol={{ span: 23, offset: 1 }}>
                   <Button type="primary" onClick={() => this.mockSaveResult('fake_contract_00')}>
                     保存
                   </Button>{' '}
