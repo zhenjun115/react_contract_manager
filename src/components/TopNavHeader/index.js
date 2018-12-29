@@ -7,17 +7,13 @@ import styles from './index.less';
 import logo from '../../assets/logo.svg';
 
 export default class TopNavHeader extends PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      maxWidth: (props.contentWidth === 'Fixed' ? 1200 : window.innerWidth) - 330 - 165 - 4,
-    };
-  }
+  state = {
+    maxWidth: undefined,
+  };
 
   static getDerivedStateFromProps(props) {
     return {
-      maxWidth: (props.contentWidth === 'Fixed' ? 1200 : window.innerWidth) - 330 - 165 - 4,
+      maxWidth: (props.contentWidth === 'Fixed' ? 1200 : window.innerWidth) - 280 - 165 - 40,
     };
   }
 

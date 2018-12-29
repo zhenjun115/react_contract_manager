@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import ReactDOM from 'react-dom';
 import { Popover, Icon, Tabs, Badge, Spin } from 'antd';
 import classNames from 'classnames';
 import List from './NoticeList';
@@ -15,17 +16,30 @@ export default class NoticeIcon extends PureComponent {
     onTabChange: () => {},
     onClear: () => {},
     loading: false,
+    clearClose: false,
     locale: {
-      emptyText: '暂无数据',
-      clear: '清空',
+      emptyText: 'No notifications',
+      clear: 'Clear',
     },
     emptyImage: 'https://gw.alipayobjects.com/zos/rmsportal/wAhyIChODzsoKIOBHcBk.svg',
   };
 
   onItemClick = (item, tabProps) => {
     const { onItemClick } = this.props;
+    const { clickClose } = item;
     onItemClick(item, tabProps);
+    if (clickClose) {
+      this.popover.click();
+    }
   };
+
+  onClear = (name) => {
+    const { onClear, clearClose } = this.props;
+    onClear(name)
+    if (clearClose) {
+      this.popover.click();
+    }
+  }
 
   onTabChange = tabType => {
     const { onTabChange } = this.props;
@@ -33,7 +47,7 @@ export default class NoticeIcon extends PureComponent {
   };
 
   getNotificationBox() {
-    const { children, loading, locale, onClear } = this.props;
+    const { children, loading, locale } = this.props;
     if (!children) {
       return null;
     }
@@ -43,12 +57,12 @@ export default class NoticeIcon extends PureComponent {
           ? `${child.props.title} (${child.props.list.length})`
           : child.props.title;
       return (
-        <TabPane tab={title} key={child.props.title}>
+        <TabPane tab={title} key={child.props.name}>
           <List
             {...child.props}
             data={child.props.list}
             onClick={item => this.onItemClick(item, child.props)}
-            onClear={() => onClear(child.props.title)}
+            onClear={() => this.onClear(child.props.name)}
             title={child.props.title}
             locale={locale}
           />
@@ -93,6 +107,7 @@ export default class NoticeIcon extends PureComponent {
         popupAlign={popupAlign}
         onVisibleChange={onPopupVisibleChange}
         {...popoverProps}
+        ref={node => { this.popover = ReactDOM.findDOMNode(node)}} // eslint-disable-line
       >
         {trigger}
       </Popover>
