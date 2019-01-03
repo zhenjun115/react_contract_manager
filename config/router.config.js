@@ -24,44 +24,49 @@ export default [
       { path: '/contract/template/', component: './contract/Template' },
       { path: '/contract/create', redirect: '/contract/template' },
       { path: '/contract/create/:templateId', component: './contract/StepForm' },
+      // 采购合同模版列表页面
+      { path: '/purchase_contract/template/', component: './purchaseContract/Template' },
+
+      // 采购合同模版创建页面
+      {
+        path: '/purchase_contract/template/create',
+        component: './purchaseContract/TemplateCreate',
+      },
+
+      // 采购合同模版详情页面
+      {
+        path: '/purchase_contract/template/info/:templateId',
+        component: './purchaseContract/TemplateInfo',
+      },
+
+      // 编辑合同信息
+      { path: '/contract/edit/:contractId', component: './contract/StepForm' },
+      { path: '/contract/fetch/:contractId', component: './contract/StepForm' },
       { path: '/dashboard/workplace', component: './Dashboard/Workplace' },
+
+      // 主页--合同
+      { path: '/dashboard/workplace/contract/:status', component: './Dashboard/Contract' },
+
+      // 主页--模版
+      { path: '/dashboard/workplace/template', component: './Dashboard/Template' },
+
+      // 合同--状态
       { path: '/contract/status/:contractId', component: './Dashboard/Status' },
-      /* {
-        path: '/dashboard',
-        name: 'dashboard',
-        icon: 'dashboard',
-        routes: [
-          {
-            path: '/dashboard/analysis',
-            name: 'analysis',
-            component: './Dashboard/Analysis',
-          },
-          {
-            path: '/dashboard/monitor',
-            name: 'monitor',
-            component: './Dashboard/Monitor',
-          },
-          {
-            path: '/dashboard/workplace',
-            name: 'workplace',
-            component: './Dashboard/Workplace',
-          },
-        ],
-      }, */
+
       // forms
       {
         path: '/form',
         icon: 'form',
-        name: 'form',
+        // name: 'form',
         routes: [
           {
             path: '/form/basic-form',
-            name: 'basicform',
+            // name: 'basicform',
             component: './Forms/BasicForm',
           },
           {
             path: '/form/step-form',
-            name: 'stepform',
+            // name: 'stepform',
             component: './Forms/StepForm',
             hideChildrenInMenu: true,
             routes: [
@@ -98,26 +103,44 @@ export default [
       {
         path: '/list',
         icon: 'table',
-        name: 'list',
+        // name: 'list',
+        // name: 'template',
         routes: [
-          {
+          /* {
             path: '/list/table-list',
             name: 'searchtable',
             component: './List/TableList',
+          }, */
+          {
+            // path: '/list/table-list',
+            path: '/contract/template',
+            // name: 'searchtable',
+            name: 'contract',
+            // component: './List/TableList',
+            component: './contract/Template',
+          },
+          // 顶部菜单: 采购合同模版列表
+          {
+            // path: '/list/table-list',
+            path: '/purchase_contract/template',
+            // name: 'searchtable',
+            name: 'purchase_contract',
+            // component: './List/TableList',
+            component: './purchaseContract/Template',
           },
           {
             path: '/list/basic-list',
-            name: 'basiclist',
+            // name: 'basiclist',
             component: './List/BasicList',
           },
           {
             path: '/list/card-list',
-            name: 'cardlist',
+            // name: 'cardlist',
             component: './List/CardList',
           },
           {
             path: '/list/search',
-            name: 'searchlist',
+            // name: 'searchlist',
             component: './List/List',
             routes: [
               {
@@ -143,9 +166,61 @@ export default [
           },
         ],
       },
+      // 劳务合同
+      {
+        path: '/labor',
+        name: 'labor',
+        icon: 'table',
+        routes: [
+          // 顶部菜单: 采购合同模版列表
+          {
+            // path: '/list/table-list',
+            path: '/labor/template',
+            // name: 'searchtable',
+            name: 'template',
+            // component: './List/TableList',
+            component: './laborContract/Template',
+          },
+          // 顶部菜单: 采购合同模版列表
+          {
+            // path: '/list/table-list',
+            path: '/labor/contract',
+            // name: 'searchtable',
+            name: 'contract',
+            // component: './List/TableList',
+            component: './laborContract/Contract',
+          },
+        ],
+      },
+      // 采购合同
+      {
+        path: '/purchase',
+        name: 'purchase',
+        icon: 'table',
+        routes: [
+          // 顶部菜单: 采购合同模版列表
+          {
+            // path: '/list/table-list',
+            path: '/purchase/template',
+            // name: 'searchtable',
+            name: 'template',
+            // component: './List/TableList',
+            component: './purchaseContract/Template',
+          },
+          // 顶部菜单: 采购合同列表
+          {
+            // path: '/list/table-list',
+            path: '/purchase/contract',
+            // name: 'searchtable',
+            name: 'contract',
+            // component: './List/TableList',
+            component: './purchaseContract/Contract',
+          },
+        ],
+      },
       {
         path: '/profile',
-        name: 'profile',
+        // name: 'profile',
         icon: 'profile',
         routes: [
           // profile
@@ -163,7 +238,7 @@ export default [
         ],
       },
       {
-        name: 'result',
+        // name: 'result',
         icon: 'check-circle-o',
         path: '/result',
         routes: [
@@ -177,7 +252,7 @@ export default [
         ],
       },
       {
-        name: 'exception',
+        // name: 'exception',
         icon: 'warning',
         path: '/exception',
         routes: [
@@ -206,13 +281,24 @@ export default [
         ],
       },
       {
+        name: 'system',
+        icon: 'setting',
+        path: '/system',
+        routes: [
+          {
+            path: '/system/dict',
+            name: 'dict',
+          },
+        ],
+      },
+      {
         name: 'account',
         icon: 'user',
         path: '/account',
         routes: [
           {
             path: '/account/center',
-            name: 'center',
+            // name: 'center',
             component: './Account/Center/Center',
             routes: [
               {

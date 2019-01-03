@@ -50,15 +50,15 @@ class SecurityView extends Component {
         </a>,
       ],
     },
-    {
-      title: formatMessage({ id: 'app.settings.security.question' }, {}),
-      description: formatMessage({ id: 'app.settings.security.question-description' }, {}),
-      actions: [
-        <a>
-          <FormattedMessage id="app.settings.security.set" defaultMessage="Set" />
-        </a>,
-      ],
-    },
+    // {
+    //   title: formatMessage({ id: 'app.settings.security.question' }, {}),
+    //   description: formatMessage({ id: 'app.settings.security.question-description' }, {}),
+    //   actions: [
+    //     <a>
+    //       <FormattedMessage id="app.settings.security.set" defaultMessage="Set" />
+    //     </a>,
+    //   ],
+    // },
     {
       title: formatMessage({ id: 'app.settings.security.email' }, {}),
       description: `${formatMessage(
@@ -71,15 +71,15 @@ class SecurityView extends Component {
         </a>,
       ],
     },
-    {
-      title: formatMessage({ id: 'app.settings.security.mfa' }, {}),
-      description: formatMessage({ id: 'app.settings.security.mfa-description' }, {}),
-      actions: [
-        <a>
-          <FormattedMessage id="app.settings.security.bind" defaultMessage="Bind" />
-        </a>,
-      ],
-    },
+    // {
+    //   title: formatMessage({ id: 'app.settings.security.mfa' }, {}),
+    //   description: formatMessage({ id: 'app.settings.security.mfa-description' }, {}),
+    //   actions: [
+    //     <a>
+    //       <FormattedMessage id="app.settings.security.bind" defaultMessage="Bind" />
+    //     </a>,
+    //   ],
+    // },
   ];
 
   render() {

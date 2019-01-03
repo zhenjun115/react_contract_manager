@@ -1,9 +1,12 @@
 import request from '@/utils/request';
 
+const host = 'http://127.0.0.1:9090';
+
 export async function query() {
-  return request('/api/users');
+  return request(`${host}/user/fetch`);
 }
 
+// 获取当前登录用户信息
 export async function queryCurrent() {
-  return request('/api/currentUser');
+  return request(`${host}/user/fetch`, { method: 'POST' });
 }

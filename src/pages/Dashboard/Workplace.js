@@ -5,108 +5,85 @@ import Link from 'umi/link';
 import router from 'umi/router';
 import { Row, Col, Card, List, Avatar } from 'antd';
 
-// import { Radar } from '@/components/Charts';
 import EditableLinkGroup from '@/components/EditableLinkGroup';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import styles from './Workplace.less';
 
-// const links = [
-//   {
-//     title: '操作一',
-//     href: '',
-//   },
-//   {
-//     title: '操作二',
-//     href: '',
-//   },
-//   {
-//     title: '操作三',
-//     href: '',
-//   },
-//   {
-//     title: '操作四',
-//     href: '',
-//   },
-//   {
-//     title: '操作五',
-//     href: '',
-//   },
-//   {
-//     title: '操作六',
-//     href: '',
-//   },
-// ];
-
-@connect(({ user, project, activities, contract, chart, loading, setting }) => ({
+@connect(({ user, activity, contract, loading, setting }) => ({
   currentUser: user.currentUser,
-  project,
-  activities,
+  activity,
   carryout: contract.carryout,
+  carryoutLoading: loading.effects['contract/carryout'],
   progress: contract.progress,
+  progressLoading: loading.effects['contract/progress'],
   shortcutAction: setting.shortcutAction,
-  chart,
   currentUserLoading: loading.effects['user/fetchCurrent'],
-  projectLoading: loading.effects['project/fetchNotice'],
-  activitiesLoading: loading.effects['activities/fetchList'],
+  tasksLoading: loading.effects['activity/fetchTasks'],
 }))
 class Workplace extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
+
+    // TODO: 获取用户在线信息
+    // 获取用户
     dispatch({
       type: 'user/fetchCurrent',
     });
+
+    // TODO: 获取通知
     dispatch({
-      type: 'project/fetchNotice',
+      type: 'activity/fetchNotice',
     });
+
+    // 获取当前待办任务列表
     dispatch({
-      type: 'activities/fetchList',
+      type: 'activity/fetchTasks',
+      payload: {},
     });
-    dispatch({
-      type: 'chart/fetch',
-    });
+
+    // 获取订立中的合同
     dispatch({
       type: 'contract/fetchCarryout',
     });
+
+    // 获取履行中的合同
     dispatch({
       type: 'contract/fetchProgress',
     });
-    // dispatch( {
-    //   type: 'setting/getShortcutAction'
-    // })
   }
 
-  componentWillUnmount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'chart/clear',
-    });
-  }
-
+  // 加载活动列表
   renderActivities() {
     const {
-      activities: { list },
+      activity: { tasks },
     } = this.props;
-    return list.map(item => {
-      const events = item.template.split(/@\{([^{}]*)\}/gi).map(key => {
-        if (item[key]) {
-          return (
-            <a href={item[key].link} key={item[key].name}>
-              {item[key].name}
-            </a>
-          );
-        }
-        return key;
-      });
+    // console.log( "render:", tasks );
+    return tasks.map(item => {
+      // TODO: 通知模版完善
+      // const events = item.template.split(/@\{([^{}]*)\}/gi).map(key => {
+      //   if (item[key]) {
+      //     return (
+      //       <a href={item[key].link} key={item[key].title}>
+      //         {item[key].title}
+      //       </a>
+      //     );
+      //   }
+      //   return key;
+      // });
       return (
         <List.Item key={item.id}>
           <List.Item.Meta
-            avatar={<Avatar src={item.user.avatar} />}
+            avatar={<Avatar src={item.avatar} />}
             title={
               <span>
-                <a className={styles.username}>{item.user.name}</a>
+                <a className={styles.username}>{item.title}</a>
                 &nbsp;
-                <span className={styles.event}>{events}</span>
+                <span className={styles.event}>
+                  <a href={item.link} key={item.title}>
+                    {item.content}
+                  </a>
+                </span>
               </span>
             }
             description={
@@ -121,62 +98,17 @@ class Workplace extends PureComponent {
   }
 
   render() {
-    // console.log( this.props.contract );
     const {
-      // currentUser,
-      currentUserLoading,
-      // project: { notice },
       carryout,
+      carryoutLoading,
       progress,
+      progressLoading,
       shortcutAction,
-      projectLoading,
-      activitiesLoading,
-      // chart: { radarData },
+      tasksLoading,
     } = this.props;
 
-    // const pageHeaderContent =
-    //   currentUser && Object.keys(currentUser).length ? (
-    //     <div className={styles.pageHeaderContent}>
-    //       <div className={styles.avatar}>
-    //         <Avatar size="large" src={currentUser.avatar} />
-    //       </div>
-    //       <div className={styles.content}>
-    //         <div className={styles.contentTitle}>
-    //           早安，
-    //           {currentUser.name}
-    //           ，祝你开心每一天！
-    //         </div>
-    //         <div>
-    //           {currentUser.title} |{currentUser.group}
-    //         </div>
-    //       </div>
-    //     </div>
-    //   ) : null;
-
-    /* const extraContent = (
-      <div className={styles.extraContent}>
-        <div className={styles.statItem}>
-          <p>项目数</p>
-          <p>56</p>
-        </div>
-        <div className={styles.statItem}>
-          <p>团队内排名</p>
-          <p>
-            8<span> / 24</span>
-          </p>
-        </div>
-        <div className={styles.statItem}>
-          <p>项目访问</p>
-          <p>2,223</p>
-        </div>
-      </div>
-    ); */
-
     return (
-      <PageHeaderWrapper
-        loading={currentUserLoading}
-        // content={pageHeaderContent}
-      >
+      <PageHeaderWrapper>
         <Row gutter={24}>
           <Col xl={16} lg={24} md={24} sm={24} xs={24}>
             <Card
@@ -184,24 +116,23 @@ class Workplace extends PureComponent {
               style={{ marginBottom: 24 }}
               title="订立中"
               bordered={false}
-              extra={<Link to="/">全部</Link>}
-              loading={projectLoading}
+              extra={<Link to="/dashboard/workplace/contract/progress">全部</Link>}
+              loading={progressLoading}
               bodyStyle={{ padding: 0 }}
             >
               {progress.map(item => (
-                <Card.Grid className={styles.projectGrid} key={item.id}>
+                <Card.Grid className={styles.projectGrid} key={item.contractId}>
                   <Card bodyStyle={{ padding: 0 }} bordered={false}>
                     <Card.Meta
                       title={
                         <div className={styles.cardTitle}>
-                          {/* <Avatar size="small" src={item.logo} /> */}
-                          <Link to={item.href}>{item.title}</Link>
+                          <Avatar size="small" icon="file-text" />
+                          <Link to={`/contract/fetch/${item.contractId}`}>{item.conname}</Link>
                         </div>
                       }
                       description={item.description}
                     />
                     <div className={styles.projectItemContent}>
-                      {/* <Link to={item.memberLink}>{item.member || ''}</Link> */}
                       {item.updatedAt && (
                         <span className={styles.datetime} title={item.updatedAt}>
                           {moment(item.updatedAt).fromNow()}
@@ -217,18 +148,19 @@ class Workplace extends PureComponent {
               style={{ marginBottom: 24 }}
               title="履行中"
               bordered={false}
-              extra={<Link to="/">全部</Link>}
-              loading={projectLoading}
+              extra={<Link to="/dashboard/workplace/contract/carryout">全部</Link>}
+              loading={carryoutLoading}
               bodyStyle={{ padding: 0 }}
             >
               {carryout.map(item => (
-                <Card.Grid className={styles.projectGrid} key={item.id}>
+                <Card.Grid className={styles.projectGrid} key={item.contractId}>
                   <Card bodyStyle={{ padding: 0 }} bordered={false}>
                     <Card.Meta
                       title={
                         <div className={styles.cardTitle}>
-                          {/* <Avatar size="small" src={item.logo} /> */}
-                          <Link to={item.href}>{item.title}</Link>
+                          <Avatar size="small" icon="file-text" />
+                          {/* <Link to={item.href}>{item.title}</Link> */}
+                          <Link to={`/contract/fetch/${item.contractId}`}>{item.conname}</Link>
                         </div>
                       }
                       description={item.description}
@@ -266,41 +198,12 @@ class Workplace extends PureComponent {
               bordered={false}
               className={styles.activeCard}
               title="动态"
-              loading={activitiesLoading}
+              loading={tasksLoading}
             >
-              <List loading={activitiesLoading} size="large">
+              <List loading={tasksLoading} size="large">
                 <div className={styles.activitiesList}>{this.renderActivities()}</div>
               </List>
             </Card>
-            {/* <Card
-              style={{ marginBottom: 24 }}
-              bordered={false}
-              title="XX 指数"
-              loading={radarData.length === 0}
-            >
-              <div className={styles.chart}>
-                <Radar hasLegend height={343} data={radarData} />
-              </div>
-            </Card> */}
-            {/* <Card
-              bodyStyle={{ paddingTop: 12, paddingBottom: 12 }}
-              bordered={false}
-              title="团队"
-              loading={projectLoading}
-            >
-              <div className={styles.members}>
-                <Row gutter={48}>
-                  {notice.map(item => (
-                    <Col span={12} key={`members-item-${item.id}`}>
-                      <Link to={item.href}>
-                        <Avatar src={item.logo} size="small" />
-                        <span className={styles.member}>{item.member}</span>
-                      </Link>
-                    </Col>
-                  ))}
-                </Row>
-              </div>
-                  </Card> */}
           </Col>
         </Row>
       </PageHeaderWrapper>

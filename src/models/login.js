@@ -1,8 +1,8 @@
 import { routerRedux } from 'dva/router';
 import { stringify } from 'qs';
 import { accountLogin, getFakeCaptcha } from '@/services/api';
-import { setAuthority } from '@/utils/authority';
-import { getPageQuery } from '@/utils/utils';
+import { setAuthority, setJwtToken } from '@/utils/authority';
+// import { getPageQuery } from '@/utils/utils';
 import { reloadAuthorized } from '@/utils/Authorized';
 
 export default {
@@ -22,22 +22,7 @@ export default {
       // Login successfully
       if (response.status === 'ok') {
         reloadAuthorized();
-        const urlParams = new URL(window.location.href);
-        const params = getPageQuery();
-        let { redirect } = params;
-        if (redirect) {
-          const redirectUrlParams = new URL(redirect);
-          if (redirectUrlParams.origin === urlParams.origin) {
-            redirect = redirect.substr(urlParams.origin.length);
-            if (redirect.startsWith('/#')) {
-              redirect = redirect.substr(2);
-            }
-          } else {
-            window.location.href = redirect;
-            return;
-          }
-        }
-        yield put(routerRedux.replace(redirect || '/'));
+        window.location.href = '/dashboard/workplace';
       }
     },
 
@@ -51,6 +36,7 @@ export default {
         payload: {
           status: false,
           currentAuthority: 'guest',
+          token: '',
         },
       });
       reloadAuthorized();
@@ -67,7 +53,9 @@ export default {
 
   reducers: {
     changeLoginStatus(state, { payload }) {
-      setAuthority(payload.roles);
+      const { roles, token } = payload;
+      setAuthority(roles);
+      setJwtToken(token);
       return {
         ...state,
         status: payload.status,

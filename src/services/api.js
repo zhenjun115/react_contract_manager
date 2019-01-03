@@ -1,12 +1,15 @@
 import { stringify } from 'qs';
 import request from '@/utils/request';
 
+const host = 'http://127.0.0.1:9090';
+
 export async function queryProjectNotice() {
   return request('/api/project/notice');
 }
 
+// 获取通知信息
 export async function queryActivities() {
-  return request('/api/activities');
+  return request(`${host}/activity/task`);
 }
 
 export async function queryRule(params) {
@@ -112,7 +115,9 @@ export async function fakeAccountLogin(params) {
 
 // restful方式执行账号登录
 export async function accountLogin(params) {
-  return request('http://127.0.0.1:8080/login', {
+  return request('http://127.0.0.1:9090/login', {
+    // return request('http://192.168.2.111:8080/login', {
+    // return request( 'http://172.17.2.57:8080/login', {
     method: 'POST',
     body: params,
   });

@@ -21,21 +21,26 @@ const FormItem = Form.Item;
 
 const pageSize = 5;
 
-@connect(({ list, loading }) => ({
+@connect(({ list, contractTemplate, contractForm, loading }) => ({
   list,
+  contractTemplate,
+  contractForm,
   loading: loading.models.list,
 }))
 @Form.create({
   // onValuesChange({ dispatch }, changedValues, allValues) {
   onValuesChange({ dispatch }, changedValues, allValues) {
+    const { category } = allValues;
     // 表单项变化时请求数据
     // eslint-disable-next-line
     // 模拟查询表单生效
     dispatch({
-      type: 'list/fetch',
+      // type: 'list/fetch',
+      type: 'contractTemplate/fetch',
       payload: {
+        // 分页
         count: 5,
-        templateCat: allValues,
+        catCodes: category,
       },
     });
   },
@@ -46,12 +51,13 @@ class SearchList extends Component {
     const { dispatch, form, match } = this.props;
     const payload = {};
     if (match.params.type) {
-      payload.templateCat = match.params.type;
+      payload.catCodes = [match.params.type];
       form.setFieldsValue({ category: [match.params.type] });
     }
 
     dispatch({
-      type: 'list/fetch',
+      // type: 'list/fetch',
+      type: 'contractTemplate/fetch',
       payload: Object.assign({ count: 5 }, payload),
     });
   }
@@ -63,6 +69,7 @@ class SearchList extends Component {
     }); */
   };
 
+  // 加载更多
   fetchMore = () => {
     const { dispatch } = this.props;
     dispatch({
@@ -74,47 +81,32 @@ class SearchList extends Component {
   };
 
   createContract = templateId => {
-    router.push(`/contract/create/${templateId}`);
+    const { dispatch } = this.props;
+
+    // 1. 向服务器发起请求、创建流程
+    dispatch({
+      type: 'contractForm/createDraft',
+      payload: { templateId: templateId },
+    });
+
+    // console.log( "合同", contractForm );
+    const {
+      contractForm: { currenDraftId },
+    } = this.props;
+
+    // 2. 合同草稿创建成功后跳转到合同编辑页面
+    router.push(`/contract/edit/${currenDraftId}`);
   };
 
   render() {
     const {
       form,
-      list: { list },
+      // list: { list },
+      contractTemplate: { list },
       loading,
       // match
     } = this.props;
     const { getFieldDecorator } = form;
-
-    // const owners = [
-    //   {
-    //     id: 'wzj',
-    //     name: '我自己',
-    //   },
-    //   {
-    //     id: 'wjh',
-    //     name: '吴家豪',
-    //   },
-    //   {
-    //     id: 'zxx',
-    //     name: '周星星',
-    //   },
-    //   {
-    //     id: 'zly',
-    //     name: '赵丽颖',
-    //   },
-    //   {
-    //     id: 'ym',
-    //     name: '姚明',
-    //   },
-    // ];
-
-    // const IconText = ({ type, text }) => (
-    //   <span>
-    //     <Icon type={type} style={{ marginRight: 8 }} />
-    //     {text}
-    //   </span>
-    // );
 
     const ListContent = ({ data: { content /* , updatedAt, avatar, owner, href */ } }) => (
       <div className={styles.listContent}>
@@ -127,14 +119,6 @@ class SearchList extends Component {
         </div> */}
       </div>
     );
-
-    // const formItemLayout = {
-    //   wrapperCol: {
-    //     xs: { span: 24 },
-    //     sm: { span: 24 },
-    //     md: { span: 12 },
-    //   },
-    // };
 
     const loadMore =
       list.length > 0 ? (
@@ -175,32 +159,6 @@ class SearchList extends Component {
                 )}
               </FormItem>
             </StandardFormRow>
-            {/* <StandardFormRow title="owner" grid>
-              <Row>
-                <Col lg={16} md={24} sm={24} xs={24}>
-                  <FormItem>
-                    {getFieldDecorator('owner', {
-                      initialValue: ['wjh', 'zxx'],
-                    })(
-                      <Select
-                        mode="multiple"
-                        style={{ maxWidth: 286, width: '100%' }}
-                        placeholder="选择 owner"
-                      >
-                        {owners.map(owner => (
-                          <Option key={owner.id} value={owner.id}>
-                            {owner.name}
-                          </Option>
-                        ))}
-                      </Select>
-                    )}
-                    <a className={styles.selfTrigger} onClick={this.setOwner}>
-                      只看自己的
-                    </a>
-                  </FormItem>
-                </Col>
-              </Row>
-            </StandardFormRow> */}
             <StandardFormRow title="其它选项" grid last>
               <Row gutter={16}>
                 {/* <Col xl={8} lg={10} md={12} sm={24} xs={24}>
@@ -239,13 +197,13 @@ class SearchList extends Component {
             dataSource={list}
             renderItem={item => (
               <List.Item
-                key={item.id}
+                key={item.templateId}
                 actions={[
                   // <IconText type="star-o" text={item.star} />,
                   // <IconText type="like-o" text={item.like} />,
                   // <IconText type="message" text={item.message} />,
                   // <Button>使用模版</Button>
-                  <Button type="primary" onClick={() => this.createContract(item.id)}>
+                  <Button type="primary" onClick={() => this.createContract(item.templateId)}>
                     使用模版
                   </Button>,
                 ]}

@@ -13,11 +13,18 @@ export function getAuthority(str) {
   if (typeof authority === 'string') {
     return [authority];
   }
-  console.log(authority);
+  // console.log(authority);
   return authority;
 }
 
 export function setAuthority(authority) {
   const proAuthority = typeof authority === 'string' ? [authority] : authority;
   return localStorage.setItem('antd-pro-authority', JSON.stringify(proAuthority));
+}
+
+export function getJwtToken() {
+  return localStorage.getItem('jwtToken');
+}
+export function setJwtToken(token) {
+  return localStorage.setItem('jwtToken', `Bearer ${token}`);
 }

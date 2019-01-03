@@ -104,4 +104,7 @@ export default {
   },
 
   chainWebpack: webpackPlugin,
+  cssnano: {
+    mergeRules: false,
+  },
 };

@@ -5,6 +5,7 @@ import { connect } from 'dva';
 import styles from './BaseView.less';
 import GeographicView from './GeographicView';
 import PhoneView from './PhoneView';
+import head from '../../../assets/head.png';
 // import { getTimeDistance } from '@/utils/utils';
 
 const FormItem = Form.Item;
@@ -51,7 +52,8 @@ const validatorPhone = (rule, value, callback) => {
   callback();
 };
 
-@connect(({ user }) => ({
+@connect(({ userSetting, user }) => ({
+  userSetting,
   currentUser: user.currentUser,
 }))
 @Form.create()
@@ -72,14 +74,31 @@ class BaseView extends Component {
   getAvatarURL() {
     const { currentUser } = this.props;
     if (currentUser.avatar) {
-      return currentUser.avatar;
+      // TODO: 支持自定义图片
+      // return currentUser.avatar;
     }
-    const url = 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png';
+    const url = head;
+    // console.log( "url", url );
     return url;
   }
 
   getViewDom = ref => {
     this.view = ref;
+  };
+
+  // 个人信息更新
+  handleSubmit = e => {
+    e.preventDefault();
+    const {
+      dispatch,
+      form: { getFieldsValue },
+    } = this.props;
+    // console.log('form', getFieldsValue());
+    dispatch({
+      type: 'userSettings/update',
+      payload: getFieldsValue(),
+    });
+    // console.log( "handle submit!!" );
   };
 
   render() {
@@ -110,7 +129,7 @@ class BaseView extends Component {
                 ],
               })(<Input />)}
             </FormItem>
-            <FormItem label={formatMessage({ id: 'app.settings.basic.profile' })}>
+            {/* <FormItem label={formatMessage({ id: 'app.settings.basic.profile' })}>
               {getFieldDecorator('profile', {
                 rules: [
                   {
@@ -124,7 +143,7 @@ class BaseView extends Component {
                   rows={4}
                 />
               )}
-            </FormItem>
+            </FormItem> */}
             <FormItem label={formatMessage({ id: 'app.settings.basic.country' })}>
               {getFieldDecorator('country', {
                 rules: [
@@ -173,7 +192,7 @@ class BaseView extends Component {
                 ],
               })(<PhoneView />)}
             </FormItem>
-            <Button type="primary">
+            <Button type="primary" htmlType="submit">
               <FormattedMessage
                 id="app.settings.basic.update"
                 defaultMessage="Update Information"

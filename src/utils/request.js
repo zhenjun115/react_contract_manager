@@ -4,6 +4,7 @@ import { notification } from 'antd';
 import router from 'umi/router';
 import hash from 'hash.js';
 import { isAntdPro } from './utils';
+import { getJwtToken } from '@/utils/authority';
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -81,6 +82,9 @@ export default function request(url, option) {
 
   const defaultOptions = {
     credentials: 'include',
+    headers: {
+      Authorization: getJwtToken(),
+    },
     // mode: "no-cors"
   };
   const newOptions = { ...defaultOptions, ...options };

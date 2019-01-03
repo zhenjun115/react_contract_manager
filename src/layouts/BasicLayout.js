@@ -178,13 +178,13 @@ class BasicLayout extends React.PureComponent {
     const currRouterData = this.matchParamsPath(pathname);
 
     if (!currRouterData) {
-      return 'Ant Design Pro';
+      return '合同管理系统';
     }
     const message = formatMessage({
       id: currRouterData.locale || currRouterData.name,
       defaultMessage: currRouterData.name,
     });
-    return `${message} - Ant Design Pro`;
+    return `${message} - 合同管理系统`;
   };
 
   getLayoutStyle = () => {
@@ -221,7 +221,8 @@ class BasicLayout extends React.PureComponent {
     if ((rendering || process.env.NODE_ENV === 'production') && APP_TYPE !== 'site') {
       return null;
     }
-    return <SettingDrawer />;
+    return null;
+    // return <SettingDrawer />;
   }
 
   render() {
