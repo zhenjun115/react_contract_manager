@@ -52,120 +52,6 @@ export default [
 
       // 合同--状态
       { path: '/contract/status/:contractId', component: './Dashboard/Status' },
-
-      // forms
-      {
-        path: '/form',
-        icon: 'form',
-        // name: 'form',
-        routes: [
-          {
-            path: '/form/basic-form',
-            // name: 'basicform',
-            component: './Forms/BasicForm',
-          },
-          {
-            path: '/form/step-form',
-            // name: 'stepform',
-            component: './Forms/StepForm',
-            hideChildrenInMenu: true,
-            routes: [
-              {
-                path: '/form/step-form',
-                redirect: '/form/step-form/info',
-              },
-              {
-                path: '/form/step-form/info',
-                name: 'info',
-                component: './Forms/StepForm/Step1',
-              },
-              {
-                path: '/form/step-form/confirm',
-                name: 'confirm',
-                component: './Forms/StepForm/Step2',
-              },
-              {
-                path: '/form/step-form/result',
-                name: 'result',
-                component: './Forms/StepForm/Step3',
-              },
-            ],
-          },
-          {
-            path: '/form/advanced-form',
-            name: 'advancedform',
-            authority: ['admin'],
-            component: './Forms/AdvancedForm',
-          },
-        ],
-      },
-      // list
-      {
-        path: '/list',
-        icon: 'table',
-        // name: 'list',
-        // name: 'template',
-        routes: [
-          /* {
-            path: '/list/table-list',
-            name: 'searchtable',
-            component: './List/TableList',
-          }, */
-          {
-            // path: '/list/table-list',
-            path: '/contract/template',
-            // name: 'searchtable',
-            name: 'contract',
-            // component: './List/TableList',
-            component: './contract/Template',
-          },
-          // 顶部菜单: 采购合同模版列表
-          {
-            // path: '/list/table-list',
-            path: '/purchase_contract/template',
-            // name: 'searchtable',
-            name: 'purchase_contract',
-            // component: './List/TableList',
-            component: './purchaseContract/Template',
-          },
-          {
-            path: '/list/basic-list',
-            // name: 'basiclist',
-            component: './List/BasicList',
-          },
-          {
-            path: '/list/card-list',
-            // name: 'cardlist',
-            component: './List/CardList',
-          },
-          {
-            path: '/list/search',
-            // name: 'searchlist',
-            component: './List/List',
-            routes: [
-              {
-                path: '/list/search',
-                redirect: '/list/search/articles',
-              },
-              {
-                path: '/list/search/articles',
-                name: 'articles',
-                component: './List/Articles',
-              },
-              {
-                path: '/list/search/projects',
-                name: 'projects',
-                component: './List/Projects',
-              },
-              {
-                path: '/list/search/applications',
-                name: 'applications',
-                component: './List/Applications',
-              },
-            ],
-          },
-        ],
-      },
       // 劳务合同
       {
         path: '/labor',
@@ -288,6 +174,7 @@ export default [
           {
             path: '/system/dict',
             name: 'dict',
+            component: './System/Dict',
           },
         ],
       },

@@ -1,9 +1,14 @@
-import { queryRule, removeRule, addRule, updateRule } from '@/services/api';
+import { queryDict, addDict, removeDict, updateDict } from '@/services/dict';
 
 export default {
-  namespace: 'rule',
+  namespace: 'dict',
 
   state: {
+    // 分页数据格式
+    dicts: {
+      list: [],
+      pagination: {},
+    },
     data: {
       list: [],
       pagination: {},
@@ -12,15 +17,15 @@ export default {
 
   effects: {
     *fetch({ payload }, { call, put }) {
-      // console.log(payload);
-      const response = yield call(queryRule, payload);
+      const response = yield call(queryDict, payload);
+      console.log('获取字典列表', response);
       yield put({
         type: 'save',
-        payload: response,
+        payload: response.payload,
       });
     },
     *add({ payload, callback }, { call, put }) {
-      const response = yield call(addRule, payload);
+      const response = yield call(addDict, payload);
       yield put({
         type: 'save',
         payload: response,
@@ -28,7 +33,7 @@ export default {
       if (callback) callback();
     },
     *remove({ payload, callback }, { call, put }) {
-      const response = yield call(removeRule, payload);
+      const response = yield call(removeDict, payload);
       yield put({
         type: 'save',
         payload: response,
@@ -36,7 +41,7 @@ export default {
       if (callback) callback();
     },
     *update({ payload, callback }, { call, put }) {
-      const response = yield call(updateRule, payload);
+      const response = yield call(updateDict, payload);
       yield put({
         type: 'save',
         payload: response,
@@ -47,9 +52,11 @@ export default {
 
   reducers: {
     save(state, action) {
+      console.log('页面初始化，加载字典列表数据', action.payload);
       return {
         ...state,
-        data: action.payload,
+        // data: action.payload,
+        dicts: { list: action.payload, pagination: {} },
       };
     },
   },
