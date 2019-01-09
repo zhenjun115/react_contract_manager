@@ -13,7 +13,7 @@ export default [
   // app
   {
     path: '/',
-    component: '../Layouts/BasicLayout',
+    component: '../layouts/BasicLayout',
     Routes: ['src/pages/Authorized'],
     authority: ['admin', 'user'],
     routes: [
