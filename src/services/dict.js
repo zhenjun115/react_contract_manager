@@ -12,7 +12,6 @@ export async function queryDict(params) {
 
 // 新增数据字典
 export async function addDict(params) {
-  console.log('新增数据字典', params);
   return request(`${host}/dict/add`, {
     method: 'POST',
     body: params,
@@ -29,7 +28,7 @@ export async function removeDict(params) {
 
 // 更新数据字典信息
 export async function updateDict(params) {
-  return request(`${host}/dict/update`, {
+  return request(`${host}/dict/edit`, {
     method: 'POST',
     body: params,
   });

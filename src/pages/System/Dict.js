@@ -13,15 +13,19 @@ const getValue = obj =>
     .map(key => obj[key])
     .join(',');
 
+// 新建字典弹出框
 const CreateForm = Form.create()(props => {
-  const { modalVisible, form, handleAdd, handleModalVisible } = props;
+  const { modalVisible, form, handleAdd, handleModalVisible, parentDictCodeName } = props;
+
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
+      console.log('新建数据字典', fieldsValue);
       if (err) return;
       form.resetFields();
       handleAdd(fieldsValue);
     });
   };
+
   return (
     // 新建数据字典弹出框
     <Modal
@@ -32,9 +36,10 @@ const CreateForm = Form.create()(props => {
       onCancel={() => handleModalVisible()}
     >
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="父级字典">
-        {form.getFieldDecorator('parentDictId', {
+        {/* {form.getFieldDecorator('parentDictId', {
           rules: [{ required: true, message: '不能为空' }],
-        })(<Input placeholder="请输入" />)}
+        })(<Input placeholder="请输入" />)} */}
+        <Input value={parentDictCodeName === '' ? '根节点' : parentDictCodeName} disabled />
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="字典代号">
         {form.getFieldDecorator('dictCode', {
@@ -55,6 +60,7 @@ const CreateForm = Form.create()(props => {
   );
 });
 
+// 更新字典弹出框
 @Form.create()
 class UpdateForm extends PureComponent {
   constructor(props) {
@@ -62,16 +68,12 @@ class UpdateForm extends PureComponent {
 
     this.state = {
       formVals: {
-        name: props.values.name,
-        desc: props.values.desc,
+        dictId: props.values.dictId,
+        dictCode: props.values.dictCode,
+        dictName: props.values.dictName,
+        dictDesc: props.values.dictDesc,
         key: props.values.key,
-        target: '0',
-        template: '0',
-        type: '1',
-        time: '',
-        frequency: 'month',
       },
-      currentStep: 0,
     };
 
     this.formLayout = {
@@ -80,44 +82,18 @@ class UpdateForm extends PureComponent {
     };
   }
 
-  handleNext = currentStep => {
-    const { form, handleUpdate } = this.props;
-    const { formVals: oldValue } = this.state;
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-      const formVals = { ...oldValue, ...fieldsValue };
-      this.setState(
-        {
-          formVals,
-        },
-        () => {
-          if (currentStep < 2) {
-            this.forward();
-          } else {
-            handleUpdate(formVals);
-          }
-        }
-      );
-    });
-  };
-
-  backward = () => {
-    const { currentStep } = this.state;
-    this.setState({
-      currentStep: currentStep - 1,
-    });
-  };
-
-  forward = () => {
-    const { currentStep } = this.state;
-    this.setState({
-      currentStep: currentStep + 1,
-    });
-  };
-
   render() {
-    const { updateModalVisible, handleUpdateModalVisible, form } = this.props;
+    const { updateModalVisible, handleUpdateModalVisible, form, handleUpdate } = this.props;
     const { formVals } = this.state;
+
+    const okHandle = () => {
+      form.validateFields((err, fieldsValue) => {
+        console.log('编辑数据字典', fieldsValue);
+        if (err) return;
+        form.resetFields();
+        handleUpdate(fieldsValue);
+      });
+    };
 
     return (
       <Modal
@@ -126,21 +102,32 @@ class UpdateForm extends PureComponent {
         destroyOnClose
         title="字典信息"
         visible={updateModalVisible}
-        // footer={this.renderFooter(currentStep)}
+        onOk={okHandle}
         onCancel={() => handleUpdateModalVisible()}
       >
-        <FormItem key="name" {...this.formLayout} label="字典名称">
-          {form.getFieldDecorator('name', {
-            rules: [{ required: true, message: '请输入字典名称！' }],
-            initialValue: formVals.name,
-          })(<Input placeholder="请输入" />)}
+        <FormItem key="dictId" {...this.formLayout} label="字典编号">
+          {form.getFieldDecorator('dictId', {
+            rules: [{ required: true, message: '请输入字典代号！' }],
+            initialValue: formVals.dictId,
+          })(<Input placeholder="请输入字典代号" disabled />)}
         </FormItem>
-        ,
-        <FormItem key="desc" {...this.formLayout} label="规则描述">
-          {form.getFieldDecorator('desc', {
-            rules: [{ required: true, message: '请输入至少五个字符的规则描述！', min: 5 }],
-            initialValue: formVals.desc,
-          })(<TextArea rows={4} placeholder="请输入至少五个字符" />)}
+        <FormItem key="dictCode" {...this.formLayout} label="字典代号">
+          {form.getFieldDecorator('dictCode', {
+            rules: [{ required: true, message: '请输入字典代号！' }],
+            initialValue: formVals.dictCode,
+          })(<Input placeholder="请输入字典代号" />)}
+        </FormItem>
+        <FormItem key="dictName" {...this.formLayout} label="字典名称">
+          {form.getFieldDecorator('dictName', {
+            rules: [{ required: true, message: '请输入字典名称！' }],
+            initialValue: formVals.dictName,
+          })(<Input placeholder="请输入名称" />)}
+        </FormItem>
+        <FormItem key="dictDesc" {...this.formLayout} label="字典描述">
+          {form.getFieldDecorator('dictDesc', {
+            rules: [{ required: true, message: '请输入字典描述！', min: 1 }],
+            initialValue: formVals.dictDesc,
+          })(<TextArea rows={4} placeholder="请输入字典描述" />)}
         </FormItem>
       </Modal>
     );
@@ -158,7 +145,7 @@ class Dict extends PureComponent {
     modalVisible: false,
     updateModalVisible: false,
     expandForm: false,
-    selectedRows: [],
+    selectedRows: [], // 选中的rows
     formValues: {},
     stepFormValues: {},
   };
@@ -256,6 +243,7 @@ class Dict extends PureComponent {
           payload: {
             key: selectedRows.map(row => row.key),
           },
+          // TODO: 删除失败处理
           callback: () => {
             this.setState({
               selectedRows: [],
@@ -311,6 +299,7 @@ class Dict extends PureComponent {
     });
   };
 
+  // TODO: 新增成功之后进行一次更新操作
   handleAdd = fields => {
     const { dispatch } = this.props;
     dispatch({
@@ -326,11 +315,7 @@ class Dict extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'dict/update',
-      payload: {
-        name: fields.name,
-        desc: fields.desc,
-        key: fields.key,
-      },
+      payload: fields,
     });
 
     message.success('配置成功');
@@ -386,7 +371,6 @@ class Dict extends PureComponent {
       <PageHeaderWrapper content={this.renderSimpleForm()}>
         <Card bordered={false}>
           <div className={styles.tableList}>
-            {/* <div className={styles.tableListForm}>{this.renderSimpleForm()}</div> */}
             <div className={styles.tableListOperator}>
               <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
                 新建
@@ -413,7 +397,14 @@ class Dict extends PureComponent {
           </div>
         </Card>
 
-        <CreateForm {...parentMethods} modalVisible={modalVisible} />
+        <CreateForm
+          {...parentMethods}
+          modalVisible={modalVisible}
+          parentDictCode={0}
+          parentDictCodeName="根节点"
+        />
+
+        {/* TODO: stepFormValues 名称应该修改 */}
         {stepFormValues && Object.keys(stepFormValues).length ? (
           <UpdateForm
             {...updateMethods}

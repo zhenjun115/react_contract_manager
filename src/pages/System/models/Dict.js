@@ -24,12 +24,12 @@ export default {
         payload: response.payload,
       });
     },
-    *add({ payload, callback }, { call, put }) {
-      const response = yield call(addDict, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
+    *add({ payload, callback }, { call }) {
+      yield call(addDict, payload);
+      // yield put({
+      //   type: 'reload',
+      //   payload: response,
+      // });
       if (callback) callback();
     },
     *remove({ payload, callback }, { call, put }) {
@@ -40,12 +40,9 @@ export default {
       });
       if (callback) callback();
     },
-    *update({ payload, callback }, { call, put }) {
-      const response = yield call(updateDict, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
+    *update({ payload, callback }, { call }) {
+      yield call(updateDict, payload);
+
       if (callback) callback();
     },
   },
