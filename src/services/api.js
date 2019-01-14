@@ -1,7 +1,8 @@
 import { stringify } from 'qs';
 import request from '@/utils/request';
 
-const host = 'http://127.0.0.1:9090';
+// const host = 'http://127.0.0.1:9090';
+const host = 'http://10.80.10.151:9090';
 
 export async function queryProjectNotice() {
   return request('/api/project/notice');
@@ -107,7 +108,7 @@ export async function updateFakeList(params) {
 }
 
 export async function fakeAccountLogin(params) {
-  return request('http://127.0.0.1:9090/login', {
+  return request('http://10.80.10.151:9090/login', {
     method: 'POST',
     body: params,
   });
@@ -115,7 +116,7 @@ export async function fakeAccountLogin(params) {
 
 // restful方式执行账号登录
 export async function accountLogin(params) {
-  return request('http://127.0.0.1:9090/login', {
+  return request('http://10.80.10.151:9090/login', {
     // return request('http://192.168.2.111:8080/login', {
     // return request( 'http://172.17.2.57:8080/login', {
     method: 'POST',
