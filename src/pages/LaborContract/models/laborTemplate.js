@@ -42,8 +42,8 @@ export default {
     },
 
     // 保存采购模版信息
-    *save({ payload }, { put, call }) {
-      const response = yield call(createTemplate, payload);
+    *save({ payload }, { call }) {
+      yield call(createTemplate, payload);
       // yield put({
       //   type: 'setContractUpdatedResult',
       //   payload: response,
@@ -53,6 +53,7 @@ export default {
 
   reducers: {
     initTemplateState(state, action) {
+      console.log(action);
       return {
         ...state,
         template: {},

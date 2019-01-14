@@ -29,7 +29,7 @@ import {
 import Result from '@/components/Result';
 import { connect } from 'dva';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import styles from './StepForm.less';
+import styles from './ContractCreate.less';
 import { getJwtToken } from '@/utils/authority';
 
 const { TabPane } = Tabs;
@@ -52,6 +52,7 @@ notification.config({
   loading: loading.models.contractForm,
 }))
 @Form.create({
+  // TODO: 去掉state到props的映射
   mapPropsToFields(props) {
     // console.log( "formField", props.contractForm.partyB );
     return {
@@ -84,7 +85,7 @@ notification.config({
     };
   },
 })
-class StepForm extends PureComponent {
+class TemplateCreate extends PureComponent {
   componentDidMount() {
     const {
       dispatch,
@@ -540,4 +541,4 @@ class StepForm extends PureComponent {
   }
 }
 
-export default StepForm;
+export default TemplateCreate;

@@ -1,18 +1,18 @@
 import request from '@/utils/request';
 
 // const host = 'http://172.17.2.57:8080';
-const host = 'http://127.0.0.1:9090';
+const host = 'http://10.80.10.151:9090';
 
 // 获取合同列表
 export async function fetchContract(param) {
-  return request(`${host}/purchase/contract/fetch`, {
+  return request(`${host}/labor/contract/fetch`, {
     method: 'POST',
     body: param,
   });
 }
 
 export async function fetchContractById(param) {
-  return request(`${host}/purchase/contract/fetchById`, {
+  return request(`${host}/labor/contract/fetchById`, {
     method: 'POST',
     body: param,
   });

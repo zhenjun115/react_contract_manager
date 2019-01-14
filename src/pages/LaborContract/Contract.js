@@ -20,6 +20,7 @@ const FormItem = Form.Item;
     const { category } = allValues;
     // console.log( "请求数据--所属类目:", category );
     // 表单项变化时请求数据
+    // TODO: 修改查询条件
     dispatch({
       type: 'contractContract/fetch',
       payload: {
@@ -63,7 +64,7 @@ class Contract extends Component {
 
   // 创建采购模版
   createTemplate = () => {
-    router.push('/purchase_contract/template/create');
+    router.push('/labor_contract/template/create');
   };
 
   render() {
@@ -76,9 +77,9 @@ class Contract extends Component {
     const { getFieldDecorator } = form;
 
     // 模版列表
-    const ListContent = ({ data: { content /* , updatedAt, avatar, owner, href */ } }) => (
+    const ListContent = ({ data: { description /* , updatedAt, avatar, owner, href */ } }) => (
       <div className={styles.listContent}>
-        <div className={styles.description}>{content}</div>
+        <div className={styles.description}>{description}</div>
         {/* <div className={styles.extra}>
           <Avatar src={avatar} size="small" />
           <a href={href}>{owner}</a> 发布在
@@ -153,14 +154,14 @@ class Contract extends Component {
               renderItem={item => (
                 <List.Item
                   key={item.contractId}
-                  actions={[<Button type="primary">使用模版</Button>]}
+                  actions={[<Button type="primary">查看合同</Button>]}
                   extra={<div className={styles.listItemExtra} />}
                 >
                   <List.Item.Meta
                     title={
                       <div>
                         <a className={styles.listItemMetaTitle} href={item.href}>
-                          {item.title}
+                          {item.conname}
                         </a>
                       </div>
                     }

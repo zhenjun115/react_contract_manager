@@ -1,6 +1,6 @@
 import request from '@/utils/request';
 
-const host = 'http://127.0.0.1:9090';
+const host = 'http://10.80.10.151:9090';
 
 // 获取合同列表
 export async function fetchContractList(params) {

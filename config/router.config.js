@@ -24,6 +24,7 @@ export default [
       { path: '/contract/template/', component: './Contract/Template' },
       { path: '/contract/create', redirect: '/Contract/template' },
       { path: '/contract/create/:templateId', component: './Contract/StepForm' },
+      { path: '/labor_contract/template/create', component: './LaborContract/TemplateCreate' },
       // 采购合同模版列表页面
       { path: '/purchase_contract/template/', component: './PurchaseContract/Template' },
 
@@ -37,6 +38,12 @@ export default [
       {
         path: '/purchase_contract/template/info/:templateId',
         component: './PurchaseContract/TemplateInfo',
+      },
+
+      // 采购合同模版详情页面
+      {
+        path: '/labor_contract/template/info/:templateId',
+        component: './LaborContract/TemplateInfo',
       },
 
       // 编辑合同信息
@@ -174,12 +181,12 @@ export default [
           {
             path: '/archive/contract',
             name: 'contract',
-            component: './Archive/Contract',
+            component: './Archive/ContractFile',
           },
           {
             path: '/archive/template',
             name: 'template',
-            component: './Archive/Template',
+            component: './Archive/TemplateFile',
           },
         ],
       },

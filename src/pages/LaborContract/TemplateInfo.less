@@ -1,0 +1,34 @@
+@import '~antd/lib/style/themes/default.less';
+@import '~@/utils/utils.less';
+:global {
+  .uploadBar {
+    .ant-upload {
+      width: 100%;
+      height: 24px;
+    }
+  }
+}
+
+.extraContentSearch {
+  margin-left: 16px;
+  width: 272px;
+}
+
+.listContent {
+  font-size: 0;
+  .listContentItem {
+    color: @text-color-secondary;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: @font-size-base;
+    margin-left: 40px;
+    > span {
+      line-height: 20px;
+    }
+    > p {
+      margin-top: 4px;
+      margin-bottom: 0;
+      line-height: 22px;
+    }
+  }
+}

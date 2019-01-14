@@ -30,16 +30,19 @@ export default {
 
   reducers: {
     initContractState(state, action) {
+      console.log(action);
       return {
         ...state,
         contract: {},
       };
     },
     setContractList(state, action) {
-      const { payload } = action;
+      const {
+        payload: { contracts },
+      } = action;
       return {
         ...state,
-        contracts: [],
+        contracts: contracts,
       };
     },
     setContract(state, action) {
