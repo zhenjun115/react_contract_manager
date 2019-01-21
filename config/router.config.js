@@ -6,8 +6,6 @@ export default [
     routes: [
       { path: '/user', redirect: '/user/login' },
       { path: '/user/login', component: './User/Login' },
-      // { path: '/user/register', component: './User/Register' },
-      // { path: '/user/register-result', component: './User/RegisterResult' },
     ],
   },
   // app
@@ -18,13 +16,14 @@ export default [
     authority: ['admin', 'user'],
     routes: [
       // dashboard
-      // { path: '/', redirect: '/dashboard/analysis' },
       { path: '/', redirect: '/dashboard/workplace' },
       { path: '/contract/template/:type', component: './Contract/Template' },
       { path: '/contract/template/', component: './Contract/Template' },
       { path: '/contract/create', redirect: '/Contract/template' },
       { path: '/contract/create/:templateId', component: './Contract/StepForm' },
       { path: '/labor_contract/template/create', component: './LaborContract/TemplateCreate' },
+      { path: '/labor_contract/create/:templateId', component: './LaborContract/ContractCreate' },
+      { path: '/labor_contract/view/:contractId', component: './LaborContract/ContractEdit' },
       // 采购合同模版列表页面
       { path: '/purchase_contract/template/', component: './PurchaseContract/Template' },
 
@@ -67,20 +66,14 @@ export default [
         routes: [
           // 顶部菜单: 采购合同模版列表
           {
-            // path: '/list/table-list',
             path: '/labor/template',
-            // name: 'searchtable',
             name: 'template',
-            // component: './List/TableList',
             component: './LaborContract/Template',
           },
           // 顶部菜单: 采购合同模版列表
           {
-            // path: '/list/table-list',
             path: '/labor/contract',
-            // name: 'searchtable',
             name: 'contract',
-            // component: './List/TableList',
             component: './LaborContract/Contract',
           },
         ],
@@ -93,30 +86,22 @@ export default [
         routes: [
           // 顶部菜单: 采购合同模版列表
           {
-            // path: '/list/table-list',
             path: '/purchase/template',
-            // name: 'searchtable',
             name: 'template',
-            // component: './List/TableList',
             component: './PurchaseContract/Template',
           },
           // 顶部菜单: 采购合同列表
           {
-            // path: '/list/table-list',
             path: '/purchase/contract',
-            // name: 'searchtable',
             name: 'contract',
-            // component: './List/TableList',
             component: './PurchaseContract/Contract',
           },
         ],
       },
       {
         path: '/profile',
-        // name: 'profile',
         icon: 'profile',
         routes: [
-          // profile
           {
             path: '/profile/basic',
             name: 'basic',
@@ -131,7 +116,6 @@ export default [
         ],
       },
       {
-        // name: 'result',
         icon: 'check-circle-o',
         path: '/result',
         routes: [
@@ -145,7 +129,6 @@ export default [
         ],
       },
       {
-        // name: 'exception',
         icon: 'warning',
         path: '/exception',
         routes: [
@@ -209,7 +192,6 @@ export default [
         routes: [
           {
             path: '/account/center',
-            // name: 'center',
             component: './Account/Center/Center',
             routes: [
               {

@@ -33,7 +33,6 @@ export default {
 
     // 创建劳务合同
     *createContract({ payload }, { put, call }) {
-      console.log('创建劳务合同', payload);
       const response = yield call(createContractDraft, payload);
       yield put({
         type: 'setCurrenDraft',
@@ -42,12 +41,11 @@ export default {
     },
 
     // 保存采购模版信息
-    *save({ payload }, { call }) {
-      yield call(createTemplate, payload);
-      // yield put({
-      //   type: 'setContractUpdatedResult',
-      //   payload: response,
-      // });
+    *save({ payload, callback }, { call }) {
+      const response = yield call(createTemplate, payload);
+      if (callback) {
+        callback(response.code);
+      }
     },
   },
 

@@ -28,11 +28,11 @@ class Template extends Component {
     });
   }
 
-  handleSearch = keyword => {
+  handleSearch = value => {
     const { dispatch } = this.props;
     dispatch({
       type: 'laborTemplate/fetch',
-      payload: { keyword: keyword },
+      payload: { keyword: value },
     });
   };
 
@@ -49,20 +49,23 @@ class Template extends Component {
   };
 
   createContract = templateId => {
-    const { dispatch } = this.props;
+    // const { dispatch } = this.props;
+
+    // 跳转到合同新增页面
 
     // 1. 向服务器发起请求、创建流程
-    dispatch({
-      type: 'laborTemplate/createContract',
-      payload: { templateId: templateId },
-    });
+    // dispatch({
+    // type: 'laborTemplate/createContract',
+    // payload: { templateId: templateId },
+    // });
 
-    const {
-      laborTemplate: { currenDraftId },
-    } = this.props;
+    // const {
+    //   laborTemplate: { currenDraftId },
+    // } = this.props;
 
     // 2. 合同草稿创建成功后跳转到合同编辑页面
-    router.push(`/contract/edit/${currenDraftId}`);
+    // router.push(`/contract/edit/${currenDraftId}`);
+    router.push(`/labor_contract/create/${templateId}`);
   };
 
   // 创建劳务模版

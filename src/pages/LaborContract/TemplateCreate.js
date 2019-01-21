@@ -1,20 +1,8 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import {
-  Form,
-  Input,
-  //   DatePicker,
-  //   Select,
-  Button,
-  Card,
-  Upload,
-  //   InputNumber,
-  //   Radio,
-  Icon,
-  message,
-  //   Tooltip,
-} from 'antd';
+import { Form, Input, Button, Card, Upload, Icon, message, notification } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import { getJwtToken } from '@/utils/authority';
 
 const FormItem = Form.Item;
 // const { Option } = Select;
@@ -28,21 +16,36 @@ const { TextArea } = Input;
 @Form.create()
 class TemplateCreate extends PureComponent {
   // 保存采购合同模版
+  // TODO: 修复重复保存、数据库存在多条数据的错误;
   handleSubmit = e => {
     const { dispatch, form } = this.props;
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         const {
-          file: { status, name },
+          file: { name },
         } = values.file;
 
-        console.log(status);
-        // TODO: 修改参数名称
-        values.file = name;
         dispatch({
           type: 'laborTemplate/save',
-          payload: values,
+          payload: { ...values, file: name },
+          callback: errCode => {
+            let msg = '';
+            let details = '';
+
+            if (errCode === 1) {
+              msg = '保存成功';
+              details = '新建劳务合同模版成功';
+            } else {
+              msg = '保存失败';
+              details = '新建劳务合同模版失败';
+            }
+
+            notification.open({
+              message: msg,
+              description: details,
+            });
+          },
         });
       }
     });
@@ -77,7 +80,8 @@ class TemplateCreate extends PureComponent {
     const props = {
       name: 'file',
       multiple: false,
-      action: 'http://10.80.10.151:9090/file/upload',
+      action: 'http://10.80.10.151:8088/labor/template/upload',
+      headers: { Authorization: getJwtToken() },
       onChange(info) {
         //   const status = info.file.status;
         const {

@@ -18,7 +18,6 @@ import {
   Menu,
   List,
   Timeline,
-  Progress,
   Spin,
   // Result,
   Steps,
@@ -29,7 +28,7 @@ import {
 import Result from '@/components/Result';
 import { connect } from 'dva';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import styles from './ContractCreate.less';
+import styles from './ContractEdit.less';
 import { getJwtToken } from '@/utils/authority';
 
 const { TabPane } = Tabs;
@@ -49,22 +48,53 @@ notification.config({
 
 @connect(({ laborContract, loading }) => ({
   laborContract,
-  initing: loading.effects['laborContract/create'],
+  initing: loading.effects['laborContract/fetchById'],
 }))
 @Form.create({})
-class ContractCreate extends PureComponent {
+class ContractEdit extends PureComponent {
   componentDidMount() {
     const {
       dispatch,
       match: {
-        params: { templateId },
+        params: { contractId },
       },
+      form: { setFieldsValue },
     } = this.props;
 
-    // 1.创建劳务合同
+    // 1.查询劳务合同
     dispatch({
-      type: 'laborContract/create',
-      payload: templateId,
+      type: 'laborContract/fetchById',
+      payload: contractId,
+    });
+
+    // 2.查询劳务合同签约主体信息
+    dispatch({
+      type: 'laborContract/fetchPartyByContractId',
+      payload: contractId,
+      callback: contract => {
+        const { partyA, partyB } = contract;
+        if (partyA) {
+          setFieldsValue({
+            'partyA.name': partyA.name,
+            'partyA.address': partyA.address,
+          });
+        }
+
+        if (partyB) {
+          setFieldsValue({
+            'partyB.name': partyB.name,
+            'partyB.address': partyB.address,
+            'partyB.idNumber': partyB.idNumber,
+            'partyB.phone': partyB.phone,
+          });
+        }
+      },
+    });
+
+    // 3.查询劳务合同附件信息
+    dispatch({
+      type: 'laborContract/fetchFilesByContractId',
+      payload: contractId,
     });
   }
 
@@ -145,15 +175,11 @@ class ContractCreate extends PureComponent {
         fileCatIndex,
         // currenDraftId,
         fileList,
-        // fileUploading,
-        // uploadingMessageHook,
         contract,
         // status,
       },
-      // dispatch,
       // loading,
       form,
-      // match: { params },
       initing,
     } = this.props;
 
@@ -445,4 +471,4 @@ class ContractCreate extends PureComponent {
   }
 }
 
-export default ContractCreate;
+export default ContractEdit;

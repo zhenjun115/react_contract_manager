@@ -1,6 +1,6 @@
 import request from '@/utils/request';
 
-const host = 'http://10.80.10.151:9090';
+const host = 'http://10.80.10.151:8088';
 
 // 根据合同模版编号,创建合同模版
 export default async function updateUserSettings(params) {

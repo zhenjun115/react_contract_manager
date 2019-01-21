@@ -19,7 +19,7 @@ import styles from './Workplace.less';
   progressLoading: loading.effects['contract/progress'],
   shortcutAction: setting.shortcutAction,
   currentUserLoading: loading.effects['user/fetchCurrent'],
-  tasksLoading: loading.effects['activity/fetchTasks'],
+  tasksLoading: loading.effects['activity/tasks/fetch'],
 }))
 class Workplace extends PureComponent {
   componentDidMount() {
@@ -38,7 +38,7 @@ class Workplace extends PureComponent {
 
     // 获取当前待办任务列表
     dispatch({
-      type: 'activity/fetchTasks',
+      type: 'activity/tasks/fetch',
       payload: {},
     });
 

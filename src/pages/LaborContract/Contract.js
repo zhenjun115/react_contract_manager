@@ -42,11 +42,11 @@ class Contract extends Component {
     });
   }
 
-  handleSearch = keyword => {
+  handleSearch = value => {
     const { dispatch } = this.props;
     dispatch({
       type: 'laborContract/fetch',
-      payload: { keyword: keyword },
+      payload: { keyword: value },
     });
   };
 
@@ -62,9 +62,9 @@ class Contract extends Component {
     });
   };
 
-  // 创建采购模版
-  createTemplate = () => {
-    router.push('/labor_contract/template/create');
+  // 查看合同详情
+  viewContract = contractId => {
+    router.push(`/labor_contract/view/${contractId}`);
   };
 
   render() {
@@ -147,14 +147,18 @@ class Contract extends Component {
             <List
               size="large"
               loading={fetching}
-              rowKey="id"
+              rowKey="contractId"
               itemLayout="vertical"
               loadMore={loadMore}
               dataSource={contracts}
               renderItem={item => (
                 <List.Item
                   key={item.contractId}
-                  actions={[<Button type="primary">查看合同</Button>]}
+                  actions={[
+                    <Button type="primary" onClick={() => this.viewContract(item.contractId)}>
+                      查看合同
+                    </Button>,
+                  ]}
                   extra={<div className={styles.listItemExtra} />}
                 >
                   <List.Item.Meta
