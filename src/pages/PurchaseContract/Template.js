@@ -9,7 +9,6 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 @connect(({ contractTemplate, contractForm, loading, purchaseTemplate }) => ({
   contractTemplate,
   contractForm,
-  // loading,
   fetching: loading.effects['purchaseTemplate/fetch'],
   purchaseTemplate,
 }))
@@ -30,11 +29,11 @@ class Template extends Component {
     });
   }
 
-  handleSearch = keyword => {
+  handleSearch = value => {
     const { dispatch } = this.props;
     dispatch({
       type: 'purchaseTemplate/fetch',
-      payload: { keyword: keyword },
+      payload: { keyword: value },
     });
   };
 
@@ -62,14 +61,9 @@ class Template extends Component {
 
   render() {
     const {
-      // form,
-      // list: { list },
-      // contractTemplate: { list },
       purchaseTemplate: { templates },
       fetching,
-      // match
     } = this.props;
-    // const { getFieldDecorator } = form;
 
     // 模版列表
     const ListContent = ({ data: { content /* , updatedAt, avatar, owner, href */ } }) => (

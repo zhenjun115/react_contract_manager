@@ -3,23 +3,20 @@ import { connect } from 'dva';
 import {
   Form,
   Input,
-  //   DatePicker,
-  //   Select,
   Button,
   Card,
   Upload,
-  //   InputNumber,
-  //   Radio,
   Icon,
   message,
-  //   Tooltip,
+  Row,
+  Col,
+  notification
 } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import styles from './style.less';
+import './style.less';
+import { getJwtToken } from '@/utils/authority';
 
 const FormItem = Form.Item;
-// const { Option } = Select;
-// const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 
 @connect(({ loading, purchaseTemplate }) => ({
@@ -35,12 +32,29 @@ class TemplateCreate extends PureComponent {
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         const {
-          file: { status, name },
+          file: { name },
         } = values.file;
-        values.file = name;
+
         dispatch({
           type: 'purchaseTemplate/save',
-          payload: values,
+          payload: { ...values, file: name },
+          callback: errCode => {
+            let msg = '';
+            let details = '';
+
+            if (errCode === 1) {
+              msg = '保存成功';
+              details = '新建劳务合同模版成功';
+            } else {
+              msg = '保存失败';
+              details = '新建劳务合同模版失败';
+            }
+
+            notification.open({
+              message: msg,
+              description: details,
+            });
+          },
         });
       }
     });
@@ -50,6 +64,8 @@ class TemplateCreate extends PureComponent {
     const { submitting } = this.props;
     const {
       form: { getFieldDecorator },
+      purchaseTemplate: {templateParams},
+      dispatch
     } = this.props;
 
     const formItemLayout = {
@@ -75,27 +91,34 @@ class TemplateCreate extends PureComponent {
     const props = {
       name: 'file',
       multiple: false,
-      action: '//jsonplaceholder.typicode.com/posts/',
+      action: 'http://10.80.10.151:8080/purchase/template/upload',
+      headers: { Authorization: getJwtToken() },
       onChange(info) {
-        //   const status = info.file.status;
         const {
-          file: { status, name },
+          file: { status, name, response },
         } = info;
-        if (status !== 'uploading') {
-          // console.log(info.file, info.fileList);
-        }
 
         if (status === 'done') {
           message.success(`${name} 文件上传成功.`);
         } else if (status === 'error') {
           message.error(`${name} 文件上传失败.`);
         }
+
+        if( response ) {
+          const { payload: { officePlaceholders } } = response;
+          // console.log( "更新word文件参数", officePlaceholders );
+
+          dispatch({
+            type: 'purchaseTemplate/changeTemplateParams',
+            payload: officePlaceholders
+          });
+        }
       },
     };
 
     return (
       <PageHeaderWrapper>
-        <Card bordered={false}>
+        <Card bordered={false} title="信息">
           <Form onSubmit={this.handleSubmit} hideRequiredMark style={{ marginTop: 8 }}>
             <FormItem {...formItemLayout} label="文件名称">
               {getFieldDecorator('name', {
@@ -105,7 +128,20 @@ class TemplateCreate extends PureComponent {
                     message: '请输入模版名称',
                   },
                 ],
-              })(<Input placeholder="请输入文件名称" />)}
+              })(<Input placeholder="请输入模版名称" />)}
+            </FormItem>
+
+            <FormItem {...formItemLayout} label="文档简介">
+              {getFieldDecorator('desc', {
+                rules: [
+                  {
+                    required: true,
+                    message: '请输入文档简介',
+                  },
+                ],
+              })(
+                <TextArea style={{ minHeight: 32 }} placeholder="请输入采购合同模版简介" rows={4} />
+              )}
             </FormItem>
 
             <FormItem {...formItemLayout} label="文件模版">
@@ -130,23 +166,27 @@ class TemplateCreate extends PureComponent {
               )}
             </FormItem>
 
-            <FormItem {...formItemLayout} label="文档简介">
-              {getFieldDecorator('desc', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入文档简介',
-                  },
-                ],
-              })(
-                <TextArea style={{ minHeight: 32 }} placeholder="请输入采购合同模版简介" rows={4} />
-              )}
-            </FormItem>
-            <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
+            <FormItem {...submitFormLayout} style={{ marginTop: 16 }}>
               <Button type="primary" htmlType="submit" loading={submitting}>
                 保存
               </Button>
             </FormItem>
+          </Form>
+        </Card>
+
+        <Card bordered={false} title="参数">
+          <Form layout="vertical" hideRequiredMark>
+            <Row gutter={16}>
+              {
+                templateParams.map( item => (
+                  <Col span={12} key={item.paramId}>
+                    <Form.Item label={item.description}>
+                      <Input placeholder={item.name} disabled />
+                    </Form.Item>
+                  </Col>
+                ) )
+              }
+            </Row>
           </Form>
         </Card>
       </PageHeaderWrapper>

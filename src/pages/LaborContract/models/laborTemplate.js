@@ -1,4 +1,4 @@
-import { fetchTemplate, fetchTemplateById, createTemplate } from '@/services/laborTemplate';
+import { fetchTemplate, fetchTemplateById, fetchParamsByTemplateId, createTemplate } from '@/services/laborTemplate';
 
 import { createContractDraft } from '@/services/contract';
 
@@ -10,6 +10,9 @@ export default {
     // 单个模版
     template: {},
     currenDraftId: '',
+    
+    // 模版参数
+    templateParams: []
   },
 
   effects: {
@@ -21,13 +24,31 @@ export default {
       });
     },
 
+    *changeTemplateParams( {payload}, {put} ) {
+      console.log( "更新后的模版参数", payload );
+      yield put({
+        type: 'setTemplateParams',
+        payload: Array.isArray( payload ) ? payload : []
+      });
+    },
+
     // 根据模版编号获取模版
     *fetchById({ payload }, { put, call }) {
       const response = yield call(fetchTemplateById, payload);
-      // console.log( "获取单个模版信息", response );
+
       yield put({
         type: 'setTemplate',
         payload: response.payload,
+      });
+    },
+
+    // 获取模版参数
+    *fetchParamsByTemplateId( {payload}, {put,call} ) {
+      const response = yield call( fetchParamsByTemplateId, payload );
+
+      yield put({
+        type: 'setTemplateParams',
+        payload: Array.isArray( response.payload ) ? response.payload : []
       });
     },
 
@@ -70,6 +91,15 @@ export default {
         ...state,
         template: payload,
       };
+    },
+
+    // 设置当前模版参数
+    setTemplateParams( state, action ) {
+      const { payload } = action;
+      return {
+        ...state,
+        templateParams: payload
+      }
     },
     // 设置当前操作的合同草稿编号
     setCurrenDraft(state, action) {
