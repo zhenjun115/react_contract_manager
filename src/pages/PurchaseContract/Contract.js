@@ -16,16 +16,36 @@ const FormItem = Form.Item;
   purchaseContract,
 }))
 @Form.create({
-  onValuesChange({ dispatch }, changedValues, allValues) {
-    const { category } = allValues;
-    // console.log( "请求数据--所属类目:", category );
+  onValuesChange(
+    {
+      dispatch,
+      purchaseContract: { keyword },
+    },
+    changedValues,
+    allValues
+  ) {
+    const { status } = allValues;
+    // console.log( "请求数据--所属类目:", status );
+    // 设置status状态值
+    dispatch({
+      type: 'purchaseContract/setParamStatus',
+      payload: { status: status },
+    });
+
+    // 清空合同列表
+    dispatch({
+      type: 'purchaseContract/clearContractList',
+      payload: {},
+    });
+
     // 表单项变化时请求数据
     dispatch({
-      type: 'contractContract/fetch',
+      type: 'purchaseContract/fetch',
       payload: {
         // 分页
-        count: 5,
-        catCodes: category,
+        // count: 5,
+        keyword: keyword,
+        status: status,
       },
     });
   },
@@ -42,21 +62,37 @@ class Contract extends Component {
   }
 
   handleSearch = keyword => {
-    const { dispatch } = this.props;
+    const {
+      dispatch,
+      purchaseContract: { status },
+    } = this.props;
+
+    // 清空数据
+    dispatch({
+      type: 'purchaseContract/clearContractList',
+      payload: {},
+    });
+
     dispatch({
       type: 'purchaseContract/fetch',
-      payload: { keyword: keyword },
+      payload: { keyword: keyword, status: status },
     });
   };
 
   // 加载更多
   fetchMore = () => {
-    const { dispatch, fetching } = this.props;
+    const {
+      dispatch,
+      fetching,
+      purchaseContract: { keyword, status, page },
+    } = this.props;
     if (fetching) return;
     dispatch({
       type: 'purchaseContract/fetch',
       payload: {
-        // count: pageSize,
+        keyword: keyword,
+        status: status,
+        page: { pageIndex: page.pageIndex + 1 },
       },
     });
   };
@@ -124,7 +160,7 @@ class Contract extends Component {
             <Form layout="inline">
               <StandardFormRow title="所属类目" block style={{ paddingBottom: 11 }}>
                 <FormItem>
-                  {getFieldDecorator('category')(
+                  {getFieldDecorator('status')(
                     <TagSelect>
                       <TagSelect.Option value="cat1">订立中</TagSelect.Option>
                       <TagSelect.Option value="cat2">履行中</TagSelect.Option>
@@ -153,14 +189,14 @@ class Contract extends Component {
               renderItem={item => (
                 <List.Item
                   key={item.contractId}
-                  actions={[<Button type="primary">使用模版</Button>]}
+                  actions={[<Button type="primary">查看合同</Button>]}
                   extra={<div className={styles.listItemExtra} />}
                 >
                   <List.Item.Meta
                     title={
                       <div>
                         <a className={styles.listItemMetaTitle} href={item.href}>
-                          {item.title}
+                          {item.conname}
                         </a>
                       </div>
                     }

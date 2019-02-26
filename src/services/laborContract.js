@@ -1,6 +1,6 @@
 import request from '@/utils/request';
 
-const host = 'http://10.80.10.151:8080';
+const host = 'http://127.0.0.1:8080';
 // const host = 'http://10.80.10.151:9090';
 
 // 获取合同列表
@@ -40,6 +40,13 @@ export async function createContract(param) {
 
 export async function saveParty(param) {
   return request(`${host}/labor/contract/party/update`, {
+    method: 'POST',
+    body: param,
+  });
+}
+
+export async function saveInfo(param) {
+  return request(`${host}/labor/contract/info/update`, {
     method: 'POST',
     body: param,
   });

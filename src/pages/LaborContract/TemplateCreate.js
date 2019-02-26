@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Form, Input, Button, Card, Upload, Icon, message, notification, Row, Col } from 'antd';
+import { Form, Input, Button, Card, Upload, Icon, message, notification, Tabs } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { getJwtToken } from '@/utils/authority';
 
@@ -13,7 +13,6 @@ const { TextArea } = Input;
 }))
 @Form.create()
 class TemplateCreate extends PureComponent {
-
   // 保存采购合同模版
   // TODO: 修复重复保存、数据库存在多条数据的错误;
   handleSubmit = e => {
@@ -54,38 +53,17 @@ class TemplateCreate extends PureComponent {
     const { submitting } = this.props;
     const {
       form: { getFieldDecorator },
-      laborTemplate: {templateParams},
-      dispatch
     } = this.props;
-
-    const formItemLayout = {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 7 },
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 12 },
-        md: { span: 10 },
-      },
-    };
-
-    const submitFormLayout = {
-      wrapperCol: {
-        xs: { span: 24, offset: 0 },
-        sm: { span: 10, offset: 7 },
-      },
-    };
 
     // 上传表单属性
     const props = {
       name: 'file',
       multiple: false,
-      action: 'http://10.80.10.151:8080/labor/template/upload',
+      action: 'http://127.0.0.1:8080/labor/template/upload',
       headers: { Authorization: getJwtToken() },
       onChange(info) {
         const {
-          file: { status, name, response },
+          file: { status, name },
         } = info;
 
         if (status === 'done') {
@@ -93,79 +71,76 @@ class TemplateCreate extends PureComponent {
         } else if (status === 'error') {
           message.error(`${name} 文件上传失败.`);
         }
-
-        if( response ) {
-          const { payload: { officePlaceholders } } = response;
-          console.log( "更新word文件参数", officePlaceholders );
-
-          dispatch({
-            type: 'laborTemplate/changeTemplateParams',
-            payload: officePlaceholders
-          })
-        }
       },
     };
 
     return (
       <PageHeaderWrapper>
-        <Card bordered={false} title="信息">
-          <Form onSubmit={this.handleSubmit} hideRequiredMark style={{ marginTop: 8 }}>
-            <FormItem {...formItemLayout} label="文件名称">
-              {getFieldDecorator('name', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入模版名称',
-                  },
-                ],
-              })(<Input placeholder="请输入模版名称" />)}
-            </FormItem>
+        <Tabs type="card" tabPosition="right">
+          <Tabs.TabPane tab="基本信息" key="1">
+            <Card bordered={false} title="信息">
+              <Form onSubmit={this.handleSubmit} hideRequiredMark style={{ marginTop: 8 }}>
+                <FormItem label="文件名称">
+                  {getFieldDecorator('name', {
+                    rules: [
+                      {
+                        required: true,
+                        message: '请输入模版名称',
+                      },
+                    ],
+                  })(<Input placeholder="请输入模版名称" />)}
+                </FormItem>
 
-            <FormItem {...formItemLayout} label="文档简介">
-              {getFieldDecorator('desc', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入文档简介',
-                  },
-                ],
-              })(
-                <TextArea style={{ minHeight: 32 }} placeholder="请输入劳务合同模版简介" rows={4} />
-              )}
-            </FormItem>
+                <FormItem label="文档简介">
+                  {getFieldDecorator('desc', {
+                    rules: [
+                      {
+                        required: true,
+                        message: '请输入文档简介',
+                      },
+                    ],
+                  })(
+                    <TextArea
+                      style={{ minHeight: 32 }}
+                      placeholder="请输入劳务合同模版简介"
+                      rows={4}
+                    />
+                  )}
+                </FormItem>
 
-            <FormItem {...formItemLayout} label="文件模版">
-              {getFieldDecorator('file', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请劳务合同模版文件',
-                  },
-                ],
-              })(
-                <Upload.Dragger {...props}>
-                  <p className="ant-upload-drag-icon">
-                    <Icon type="inbox" />
-                  </p>
-                  <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                  <p className="ant-upload-hint">
-                    Support for a single or bulk upload. Strictly prohibit from uploading company
-                    data or other band files
-                  </p>
-                </Upload.Dragger>
-              )}
-            </FormItem>
+                <FormItem label="文件模版">
+                  {getFieldDecorator('file', {
+                    rules: [
+                      {
+                        required: true,
+                        message: '请劳务合同模版文件',
+                      },
+                    ],
+                  })(
+                    <Upload.Dragger {...props}>
+                      <p className="ant-upload-drag-icon">
+                        <Icon type="inbox" />
+                      </p>
+                      <p className="ant-upload-text">Click or drag file to this area to upload</p>
+                      <p className="ant-upload-hint">
+                        Support for a single or bulk upload. Strictly prohibit from uploading
+                        company data or other band files
+                      </p>
+                    </Upload.Dragger>
+                  )}
+                </FormItem>
 
-            <FormItem {...submitFormLayout} style={{ marginTop: 16 }}>
-              <Button type="primary" htmlType="submit" loading={submitting}>
-                保存  
-              </Button>
-            </FormItem>
+                <FormItem style={{ marginTop: 16 }}>
+                  <Button type="primary" htmlType="submit" loading={submitting}>
+                    保存
+                  </Button>
+                </FormItem>
+              </Form>
+            </Card>
+          </Tabs.TabPane>
+        </Tabs>
 
-          </Form>
-        </Card>
-
-        <Card bordered={false} title="参数">
+        {/* <Card bordered={false}>
           <Form layout="vertical" hideRequiredMark>
             <Row gutter={16}>
               {
@@ -183,8 +158,7 @@ class TemplateCreate extends PureComponent {
               }
             </Row>
           </Form>
-        </Card>
-
+        </Card> */}
       </PageHeaderWrapper>
     );
   }

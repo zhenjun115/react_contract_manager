@@ -16,17 +16,32 @@ const FormItem = Form.Item;
   laborContract,
 }))
 @Form.create({
-  onValuesChange({ dispatch }, changedValues, allValues) {
-    const { category } = allValues;
-    // console.log( "请求数据--所属类目:", category );
-    // 表单项变化时请求数据
-    // TODO: 修改查询条件
+  onValuesChange(
+    {
+      dispatch,
+      laborContract: { keyword },
+    },
+    changedValues,
+    allValues
+  ) {
+    const { status } = allValues;
+    // 设置合同状态值
     dispatch({
-      type: 'contractContract/fetch',
+      type: 'laborContract/setParamStatus',
+      payload: { status: status },
+    });
+    // 清空合同列表
+    dispatch({
+      type: 'laborContract/clearContractList',
+      payload: {},
+    });
+
+    dispatch({
+      type: 'laborContract/fetch',
       payload: {
         // 分页
-        count: 5,
-        catCodes: category,
+        keyword: keyword,
+        status: status,
       },
     });
   },
@@ -43,21 +58,40 @@ class Contract extends Component {
   }
 
   handleSearch = value => {
-    const { dispatch } = this.props;
+    const {
+      dispatch,
+      laborContract: { status },
+    } = this.props;
+
+    // 清空数据
+    dispatch({
+      type: 'laborContract/clearContractList',
+      payload: {},
+    });
+    // 发起搜索请求
     dispatch({
       type: 'laborContract/fetch',
-      payload: { keyword: value },
+      payload: {
+        keyword: value,
+        status: status,
+      },
     });
   };
 
   // 加载更多
   fetchMore = () => {
-    const { dispatch, fetching } = this.props;
+    const {
+      dispatch,
+      fetching,
+      laborContract: { page, keyword },
+    } = this.props;
     if (fetching) return;
+
     dispatch({
       type: 'laborContract/fetch',
       payload: {
-        // count: pageSize,
+        keyword: keyword,
+        page: { pageIndex: page.pageIndex + 1, pageSize: page.pageSize },
       },
     });
   };
@@ -125,12 +159,12 @@ class Contract extends Component {
             <Form layout="inline">
               <StandardFormRow title="所属类目" block style={{ paddingBottom: 11 }}>
                 <FormItem>
-                  {getFieldDecorator('category')(
+                  {getFieldDecorator('status')(
                     <TagSelect>
-                      <TagSelect.Option value="cat1">订立中</TagSelect.Option>
-                      <TagSelect.Option value="cat2">履行中</TagSelect.Option>
-                      <TagSelect.Option value="cat3">变更中</TagSelect.Option>
-                      <TagSelect.Option value="cat4">已作废</TagSelect.Option>
+                      <TagSelect.Option value="progress">订立中</TagSelect.Option>
+                      <TagSelect.Option value="carryout">履行中</TagSelect.Option>
+                      <TagSelect.Option value="modified">变更中</TagSelect.Option>
+                      <TagSelect.Option value="end">已作废</TagSelect.Option>
                     </TagSelect>
                   )}
                   {/* <Input type="text" /> */}
@@ -155,7 +189,11 @@ class Contract extends Component {
                 <List.Item
                   key={item.contractId}
                   actions={[
-                    <Button type="primary" onClick={() => this.viewContract(item.contractId)}>
+                    <Button
+                      type="primary"
+                      onClick={() => this.viewContract(item.contractId)}
+                      size="small"
+                    >
                       查看合同
                     </Button>,
                   ]}

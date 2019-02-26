@@ -1,6 +1,20 @@
 import React, { PureComponent } from 'react';
 import { FormattedMessage } from 'umi/locale';
-import { Card, Icon, Tabs, Skeleton, message, Timeline, Steps, Col, Row, notification, Form, Input, Button } from 'antd';
+import {
+  Card,
+  Icon,
+  Tabs,
+  Skeleton,
+  message,
+  Timeline,
+  Steps,
+  Col,
+  Row,
+  notification,
+  Form,
+  Input,
+  Button,
+} from 'antd';
 import { connect } from 'dva';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import './TemplateInfo.less';
@@ -20,7 +34,6 @@ notification.config({
 
 @connect(({ laborTemplate, loading }) => ({
   laborTemplate,
-
   // 模版数据加载
   loading: loading.models.laborTemplate,
 }))
@@ -29,9 +42,7 @@ class TemplateInfo extends PureComponent {
   componentDidMount() {
     const {
       dispatch,
-      match: {
-        params,
-      },
+      match: { params },
     } = this.props;
 
     // 1.初始化模版数据
@@ -49,7 +60,7 @@ class TemplateInfo extends PureComponent {
     dispatch({
       type: 'laborTemplate/fetchParamsByTemplateId',
       payload: { templateId: params.templateId },
-    })
+    });
   }
 
   openNotification = (msg, details) => {
@@ -67,8 +78,7 @@ class TemplateInfo extends PureComponent {
         template: { templateId },
       },
     } = this.props;
-    this.openNotification('查看pageooffice', templateId);
-    // TODO: 跳转到pageoofice
+    window.open(`http://127.0.0.1:8080/pageoffice/demoTemplate?templateId=${templateId}`);
     // console.log( "查看pageoffice", templateId );
   };
 
@@ -117,11 +127,16 @@ class TemplateInfo extends PureComponent {
             <Card bordered={false}>
               <Form onSubmit={this.handleSubmit} hideRequiredMark style={{ marginTop: 8 }}>
                 <FormItem {...formItemLayout} label="文件名称">
-                  <Input placeholder="请输入模版名称" value={template.title} disabled />
+                  <Input placeholder="请输入模版名称" value={template.title} />
                 </FormItem>
 
                 <FormItem {...formItemLayout} label="文档简介">
-                  <TextArea style={{ minHeight: 32 }} placeholder="请输入劳务合同模版简介" rows={4} value={template.content} disabled />
+                  <TextArea
+                    style={{ minHeight: 32 }}
+                    placeholder="请输入劳务合同模版简介"
+                    rows={4}
+                    value={template.content}
+                  />
                 </FormItem>
 
                 {/* <FormItem {...submitFormLayout} style={{ marginTop: 16 }}>
@@ -129,22 +144,19 @@ class TemplateInfo extends PureComponent {
                     保存
                   </Button>
                 </FormItem> */}
-
               </Form>
             </Card>
 
             <Card bordered={false}>
               <Form layout="vertical" hideRequiredMark>
                 <Row gutter={16}>
-                  {
-                    templateParams.map( item => (
-                      <Col span={12} key={item.paramId} offset={2}>
-                        <Form.Item label={item.description}>
-                          <Input placeholder={item.name} disabled />
-                        </Form.Item>
-                      </Col>
-                    ) )
-                  }
+                  {templateParams.map(item => (
+                    <Col span={12} key={item.paramId} offset={2}>
+                      <Form.Item label={item.description}>
+                        <Input placeholder={item.name} disabled />
+                      </Form.Item>
+                    </Col>
+                  ))}
                 </Row>
               </Form>
             </Card>

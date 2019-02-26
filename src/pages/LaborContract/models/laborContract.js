@@ -4,6 +4,7 @@ import {
   fetchPartyByContractId,
   fetchFilesByContractId,
   createContract,
+  saveInfo,
   saveParty,
 } from '@/services/laborContract';
 
@@ -25,6 +26,14 @@ export default {
 
     // 附件列表
     fileList: [],
+
+    // 分页信息
+    page: { pageIndex: 1, pageSize: 5 },
+
+    // 搜索关键字
+    searchOpFlag: false,
+    keyword: '',
+    status: [],
   },
 
   effects: {
@@ -37,12 +46,16 @@ export default {
     },
 
     // 根据合同编号获取合同
-    *fetchById({ payload }, { put, call }) {
+    *fetchById({ payload, callback }, { put, call }) {
       const response = yield call(fetchContractById, payload);
       yield put({
         type: 'setContract',
         payload: response.payload,
       });
+
+      if (callback) {
+        callback(response.payload);
+      }
     },
 
     // 根据合同编号获取签约主体信息
@@ -81,6 +94,21 @@ export default {
         callback(response.code);
       }
     },
+
+    // 保存合同签订方信息
+    *saveInfo({ payload, callback }, { put, call }) {
+      const response = yield call(saveInfo, payload);
+      yield put({
+        type: 'setInfo',
+        payload: response.payload,
+      });
+
+      // 回调函数
+      if (callback) {
+        callback(response.code);
+      }
+    },
+
     // 根据模版创建劳务合同
     *create({ payload }, { put, call }) {
       console.log('根据模版创建劳务合同', payload);
@@ -102,11 +130,35 @@ export default {
         contract: {},
       };
     },
+
+    // 设置合同列表
     setContractList(state, action) {
+      const {
+        payload: { contracts, page },
+      } = action;
+      return {
+        ...state,
+        contracts: state.contracts.concat(contracts),
+        page: page,
+      };
+    },
+
+    // 清空数据列表
+    clearContractList(state, action) {
+      console.log('action', action);
+      return {
+        ...state,
+        contracts: [],
+      };
+    },
+
+    // 设置合同状态参数
+    setParamStatus(state, action) {
+      console.log('设置合同状态参数', action);
       const { payload } = action;
       return {
         ...state,
-        contracts: payload.contracts,
+        status: Array.isArray(payload.status) ? payload.status : [],
       };
     },
 
@@ -119,12 +171,26 @@ export default {
       };
     },
 
+    // 保存合同基本信息
+    setContractInfo(state, action) {
+      const { payload } = action;
+      console.log('保存合同基本信息返回值', payload);
+      return {
+        ...state,
+        contract: { ...state.contract, ...payload },
+      };
+    },
+
     // 保存合同签约信息
     setContractParty(state, action) {
       const { payload } = action;
       return {
         ...state,
-        contract: { ...state.contract, partyA: payload.partyA, partyB: payload.partyB },
+        contract: {
+          ...state.contract,
+          partyMain: payload.partyMain,
+          partyOther: payload.partyOther,
+        },
       };
     },
 

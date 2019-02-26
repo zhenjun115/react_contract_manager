@@ -1,4 +1,9 @@
-import { fetchTemplate, fetchTemplateById, createTemplate, fetchParamsByTemplateId } from '@/services/purchaseTemplate';
+import {
+  fetchTemplate,
+  fetchTemplateById,
+  createTemplate,
+  fetchParamsByTemplateId,
+} from '@/services/purchaseTemplate';
 
 export default {
   namespace: 'purchaseTemplate',
@@ -7,9 +12,9 @@ export default {
     templates: [],
     // 单个模版
     template: {},
-    
+
     // 模版参数
-    templateParams: []
+    templateParams: [],
   },
 
   effects: {
@@ -21,12 +26,11 @@ export default {
       });
     },
 
-    *changeTemplateParams( {payload}, {put} ) {
-      debugger;
-      console.log( "更新后的模版参数", payload );
+    *changeTemplateParams({ payload }, { put }) {
+      console.log('更新后的模版参数', payload);
       yield put({
         type: 'setTemplateParams',
-        payload: Array.isArray( payload ) ? payload : []
+        payload: Array.isArray(payload) ? payload : [],
       });
     },
 
@@ -41,12 +45,12 @@ export default {
     },
 
     // 获取模版参数
-    *fetchParamsByTemplateId( {payload}, {put,call} ) {
-      const response = yield call( fetchParamsByTemplateId, payload );
+    *fetchParamsByTemplateId({ payload }, { put, call }) {
+      const response = yield call(fetchParamsByTemplateId, payload);
 
       yield put({
         type: 'setTemplateParams',
-        payload: Array.isArray( response.payload ) ? response.payload : []
+        payload: Array.isArray(response.payload) ? response.payload : [],
       });
     },
 
@@ -67,10 +71,24 @@ export default {
       };
     },
     setTemplateList(state, action) {
-      const { payload } = action;
+      const {
+        payload: { templates, page },
+      } = action;
+      // console.log( "获取采购模版", payload );
       return {
         ...state,
-        templates: payload,
+        templates: state.templates.concat(templates),
+        page: page,
+      };
+    },
+
+    clearTemplateList(state, action) {
+      const {
+        payload: { templates },
+      } = action;
+      return {
+        ...state,
+        templates: Array.isArray(templates) ? templates : [],
       };
     },
     setTemplate(state, action) {
@@ -82,12 +100,12 @@ export default {
     },
 
     // 设置当前模版参数
-    setTemplateParams( state, action ) {
+    setTemplateParams(state, action) {
       const { payload } = action;
       return {
         ...state,
-        templateParams: payload
-      }
+        templateParams: payload,
+      };
     },
     // 设置当前操作的合同草稿编号
     setCurrenDraft(state, action) {

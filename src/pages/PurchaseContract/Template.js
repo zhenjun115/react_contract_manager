@@ -15,22 +15,38 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 class Template extends Component {
   componentDidMount() {
     // console.info( this.props.match );
-    const { dispatch, form, match } = this.props;
+    const { dispatch, form, match, purchaseTemplate } = this.props;
     const payload = {};
     if (match.params.type) {
       payload.catCodes = [match.params.type];
       form.setFieldsValue({ category: [match.params.type] });
     }
 
+    // 初始化
+    dispatch({
+      type: 'purchaseTemplate/init',
+      payload: {},
+    });
+
     // 发起请求
     dispatch({
       type: 'purchaseTemplate/fetch',
-      payload: {},
+      payload: {
+        page: purchaseTemplate.page,
+      },
     });
   }
 
   handleSearch = value => {
     const { dispatch } = this.props;
+
+    // 清空模版列表
+    dispatch({
+      type: 'purchaseTemplate/clearTemplateList',
+      payload: {},
+    });
+
+    // 搜
     dispatch({
       type: 'purchaseTemplate/fetch',
       payload: { keyword: value },
@@ -39,12 +55,17 @@ class Template extends Component {
 
   // 加载更多
   fetchMore = () => {
-    const { dispatch, fetching } = this.props;
+    const {
+      dispatch,
+      fetching,
+      purchaseTemplate: { page, keyword },
+    } = this.props;
     if (fetching) return;
     dispatch({
       type: 'purchaseTemplate/fetch',
       payload: {
-        // count: pageSize,
+        keyword: keyword,
+        page: { pageIndex: page.pageIndex + 1, pageSize: page.pageSize },
       },
     });
   };
@@ -98,7 +119,7 @@ class Template extends Component {
     const mainSearch = (
       <div style={{ textAlign: 'center' }}>
         <Input.Search
-          placeholder="模版名称/上传"
+          placeholder="模版名称/描述"
           enterButton="搜索"
           size="large"
           onSearch={value => this.handleSearch(value)}
@@ -135,7 +156,11 @@ class Template extends Component {
                 <List.Item
                   key={item.templateId}
                   actions={[
-                    <Button type="primary" onClick={() => this.viewTemplate(item.templateId)}>
+                    <Button
+                      type="primary"
+                      onClick={() => this.viewTemplate(item.templateId)}
+                      size="small"
+                    >
                       查看模版
                     </Button>,
                   ]}

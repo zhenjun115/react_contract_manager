@@ -14,57 +14,70 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 class Template extends Component {
   componentDidMount() {
     // console.info( this.props.match );
-    const { dispatch, form, match } = this.props;
+    const { dispatch, form, match, laborTemplate } = this.props;
+
     const payload = {};
     if (match.params.type) {
       payload.catCodes = [match.params.type];
       form.setFieldsValue({ category: [match.params.type] });
     }
 
+    // 初始化
+    dispatch({
+      type: 'laborTemplate/init',
+      payload: {},
+    });
+
     // 发起请求
     dispatch({
       type: 'laborTemplate/fetch',
-      payload: {},
+      payload: {
+        page: laborTemplate.page,
+      },
     });
   }
 
+  // 根据关键字进行搜索
   handleSearch = value => {
     const { dispatch } = this.props;
+
+    // 清空模版列表
+    dispatch({
+      type: 'laborTemplate/clearTemplateList',
+      payload: {},
+    });
+
+    // 搜
     dispatch({
       type: 'laborTemplate/fetch',
-      payload: { keyword: value },
+      payload: {
+        keyword: value,
+      },
     });
   };
 
   // 加载更多
   fetchMore = () => {
-    const { dispatch, fetching } = this.props;
+    const {
+      dispatch,
+      fetching,
+      laborTemplate: { page, keyword },
+    } = this.props;
     if (fetching) return;
+    // console.log( "keyword", keyword );
+
+    // 发起请求
     dispatch({
       type: 'laborTemplate/fetch',
       payload: {
-        // count: pageSize,
+        keyword: keyword,
+        page: { pageIndex: page.pageIndex + 1, pageSize: page.pageSize },
       },
     });
   };
 
+  // 创建劳务合同
   createContract = templateId => {
-    // const { dispatch } = this.props;
-
-    // 跳转到合同新增页面
-
-    // 1. 向服务器发起请求、创建流程
-    // dispatch({
-    // type: 'laborTemplate/createContract',
-    // payload: { templateId: templateId },
-    // });
-
-    // const {
-    //   laborTemplate: { currenDraftId },
-    // } = this.props;
-
-    // 2. 合同草稿创建成功后跳转到合同编辑页面
-    // router.push(`/contract/edit/${currenDraftId}`);
     router.push(`/labor_contract/create/${templateId}`);
   };
 
@@ -117,7 +130,7 @@ class Template extends Component {
     const mainSearch = (
       <div style={{ textAlign: 'center' }}>
         <Input.Search
-          placeholder="模版名称/上传"
+          placeholder="模版名称/描述"
           enterButton="搜索"
           size="large"
           onSearch={value => this.handleSearch(value)}
@@ -154,10 +167,18 @@ class Template extends Component {
                 <List.Item
                   key={item.templateId}
                   actions={[
-                    <Button type="primary" onClick={() => this.createContract(item.templateId)}>
+                    <Button
+                      type="primary"
+                      onClick={() => this.createContract(item.templateId)}
+                      size="small"
+                    >
                       使用模版
                     </Button>,
-                    <Button type="primary" onClick={() => this.viewTemplate(item.templateId)}>
+                    <Button
+                      type="primary"
+                      onClick={() => this.viewTemplate(item.templateId)}
+                      size="small"
+                    >
                       查看模版
                     </Button>,
                   ]}

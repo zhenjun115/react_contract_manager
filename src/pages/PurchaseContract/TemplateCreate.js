@@ -10,11 +10,13 @@ import {
   message,
   Row,
   Col,
-  notification
+  notification,
+  Tabs,
 } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import './style.less';
 import { getJwtToken } from '@/utils/authority';
+import ContractInfo from './ContractInfo';
 
 const FormItem = Form.Item;
 const { TextArea } = Input;
@@ -64,38 +66,19 @@ class TemplateCreate extends PureComponent {
     const { submitting } = this.props;
     const {
       form: { getFieldDecorator },
-      purchaseTemplate: {templateParams},
-      dispatch
+      purchaseTemplate: { templateParams },
+      dispatch,
     } = this.props;
-
-    const formItemLayout = {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 7 },
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 12 },
-        md: { span: 10 },
-      },
-    };
-
-    const submitFormLayout = {
-      wrapperCol: {
-        xs: { span: 24, offset: 0 },
-        sm: { span: 10, offset: 7 },
-      },
-    };
 
     // 上传表单属性
     const props = {
       name: 'file',
       multiple: false,
-      action: 'http://10.80.10.151:8080/purchase/template/upload',
+      action: 'http://127.0.0.1:8080/purchase/template/upload',
       headers: { Authorization: getJwtToken() },
       onChange(info) {
         const {
-          file: { status, name, response },
+          file: { status, name },
         } = info;
 
         if (status === 'done') {
@@ -104,91 +87,99 @@ class TemplateCreate extends PureComponent {
           message.error(`${name} 文件上传失败.`);
         }
 
-        if( response ) {
-          const { payload: { officePlaceholders } } = response;
-          // console.log( "更新word文件参数", officePlaceholders );
+        // if( response ) {
+        //   const { payload: { officePlaceholders } } = response;
+        //   // console.log( "更新word文件参数", officePlaceholders );
 
-          dispatch({
-            type: 'purchaseTemplate/changeTemplateParams',
-            payload: officePlaceholders
-          });
-        }
+        //   dispatch({
+        //     type: 'purchaseTemplate/changeTemplateParams',
+        //     payload: officePlaceholders
+        //   });
+        // }
       },
     };
 
     return (
       <PageHeaderWrapper>
-        <Card bordered={false} title="信息">
-          <Form onSubmit={this.handleSubmit} hideRequiredMark style={{ marginTop: 8 }}>
-            <FormItem {...formItemLayout} label="文件名称">
-              {getFieldDecorator('name', {
-                rules: [
+        <Tabs type="card" tabPosition="right">
+          <Tabs.TabPane tab="基本信息" key="1">
+            <Card bordered={false} title="信息">
+              <Form onSubmit={this.handleSubmit} hideRequiredMark style={{ marginTop: 8 }}>
+                <FormItem label="文件名称">
+                  {getFieldDecorator('name', {
+                    rules: [
+                      {
+                        required: true,
+                        message: '请输入模版名称',
+                      },
+                    ],
+                  })(<Input placeholder="请输入模版名称" />)}
+                </FormItem>
+
+                <FormItem label="文档简介">
+                  {getFieldDecorator('desc', {
+                    rules: [
+                      {
+                        required: true,
+                        message: '请输入文档简介',
+                      },
+                    ],
+                  })(
+                    <TextArea
+                      style={{ minHeight: 32 }}
+                      placeholder="请输入采购合同模版简介"
+                      rows={4}
+                    />
+                  )}
+                </FormItem>
+
+                <FormItem label="文件模版">
+                  {getFieldDecorator('file', {
+                    rules: [
+                      {
+                        required: true,
+                        message: '请上传模版文件',
+                      },
+                    ],
+                  })(
+                    <Upload.Dragger {...props}>
+                      <p className="ant-upload-drag-icon">
+                        <Icon type="inbox" />
+                      </p>
+                      <p className="ant-upload-text">Click or drag file to this area to upload</p>
+                      <p className="ant-upload-hint">
+                        Support for a single or bulk upload. Strictly prohibit from uploading
+                        company data or other band files
+                      </p>
+                    </Upload.Dragger>
+                  )}
+                </FormItem>
+
+                <FormItem style={{ marginTop: 16 }}>
+                  <Button type="primary" htmlType="submit" loading={submitting}>
+                    保存
+                  </Button>
+                </FormItem>
+              </Form>
+            </Card>
+
+            {/* <Card bordered={false} >
+              <Form layout="vertical" hideRequiredMark>
+                <Row gutter={16}>
                   {
-                    required: true,
-                    message: '请输入模版名称',
-                  },
-                ],
-              })(<Input placeholder="请输入模版名称" />)}
-            </FormItem>
-
-            <FormItem {...formItemLayout} label="文档简介">
-              {getFieldDecorator('desc', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入文档简介',
-                  },
-                ],
-              })(
-                <TextArea style={{ minHeight: 32 }} placeholder="请输入采购合同模版简介" rows={4} />
-              )}
-            </FormItem>
-
-            <FormItem {...formItemLayout} label="文件模版">
-              {getFieldDecorator('file', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请上传模版文件',
-                  },
-                ],
-              })(
-                <Upload.Dragger {...props}>
-                  <p className="ant-upload-drag-icon">
-                    <Icon type="inbox" />
-                  </p>
-                  <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                  <p className="ant-upload-hint">
-                    Support for a single or bulk upload. Strictly prohibit from uploading company
-                    data or other band files
-                  </p>
-                </Upload.Dragger>
-              )}
-            </FormItem>
-
-            <FormItem {...submitFormLayout} style={{ marginTop: 16 }}>
-              <Button type="primary" htmlType="submit" loading={submitting}>
-                保存
-              </Button>
-            </FormItem>
-          </Form>
-        </Card>
-
-        <Card bordered={false} title="参数">
-          <Form layout="vertical" hideRequiredMark>
-            <Row gutter={16}>
-              {
-                templateParams.map( item => (
-                  <Col span={12} key={item.paramId}>
-                    <Form.Item label={item.description}>
-                      <Input placeholder={item.name} disabled />
-                    </Form.Item>
-                  </Col>
-                ) )
-              }
-            </Row>
-          </Form>
-        </Card>
+                    templateParams.map( item => (
+                      <Col span={12} key={item.paramId}>
+                        <Form.Item label={item.description}>
+                          <Input placeholder={item.name} disabled />
+                        </Form.Item>
+                      </Col>
+                    ) )
+                  }
+                </Row>
+              </Form>
+            </Card> */}
+          </Tabs.TabPane>
+        </Tabs>
       </PageHeaderWrapper>
     );
   }

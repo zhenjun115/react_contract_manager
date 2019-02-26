@@ -1,6 +1,19 @@
 import React, { PureComponent } from 'react';
 import { FormattedMessage } from 'umi/locale';
-import { Card, Icon, Tabs, Skeleton, message, Timeline, Steps, Col, Row, notification, Form, Input } from 'antd';
+import {
+  Card,
+  Icon,
+  Tabs,
+  Skeleton,
+  message,
+  Timeline,
+  Steps,
+  Col,
+  Row,
+  notification,
+  Form,
+  Input,
+} from 'antd';
 import { connect } from 'dva';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import './TemplateInfo.less';
@@ -27,9 +40,7 @@ class TemplateInfo extends PureComponent {
   componentDidMount() {
     const {
       dispatch,
-      match: {
-        params,
-      },
+      match: { params },
     } = this.props;
 
     // 1.加载模版数据
@@ -42,8 +53,7 @@ class TemplateInfo extends PureComponent {
     dispatch({
       type: 'purchaseTemplate/fetchParamsByTemplateId',
       payload: { templateId: params.templateId },
-    })
-
+    });
   }
 
   openNotification = (msg, details) => {
@@ -66,7 +76,7 @@ class TemplateInfo extends PureComponent {
 
   render() {
     const {
-      purchaseTemplate: { template, templateParams },
+      purchaseTemplate: { template },
     } = this.props;
 
     const formItemLayout = {
@@ -110,11 +120,16 @@ class TemplateInfo extends PureComponent {
             <Card bordered={false}>
               <Form onSubmit={this.handleSubmit} hideRequiredMark style={{ marginTop: 8 }}>
                 <FormItem {...formItemLayout} label="文件名称">
-                  <Input placeholder="请输入模版名称" value={template.title} disabled />
+                  <Input placeholder="请输入模版名称" value={template.title} />
                 </FormItem>
 
                 <FormItem {...formItemLayout} label="文档简介">
-                  <TextArea style={{ minHeight: 32 }} placeholder="请输入劳务合同模版简介" rows={4} value={template.content} disabled />
+                  <TextArea
+                    style={{ minHeight: 32 }}
+                    placeholder="请输入劳务合同模版简介"
+                    rows={4}
+                    value={template.content}
+                  />
                 </FormItem>
 
                 {/* <FormItem {...submitFormLayout} style={{ marginTop: 16 }}>
@@ -122,25 +137,24 @@ class TemplateInfo extends PureComponent {
                     保存
                   </Button>
                 </FormItem> */}
-
               </Form>
             </Card>
 
-            <Card bordered={false}>
+            {/* <Card bordered={false}>
               <Form layout="vertical" hideRequiredMark>
                 <Row gutter={16}>
                   {
                     templateParams.map( item => (
                       <Col span={12} key={item.paramId} offset={2}>
                         <Form.Item label={item.description}>
-                          <Input placeholder={item.name} disabled />
+                          <Input placeholder={item.name} />
                         </Form.Item>
                       </Col>
                     ) )
                   }
                 </Row>
               </Form>
-            </Card>
+            </Card> */}
           </TabPane>
           <TabPane tab="模版变更" key="2">
             <Card>

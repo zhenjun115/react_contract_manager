@@ -7,6 +7,9 @@ export default {
     contracts: [],
     // 单个模版
     contract: {},
+
+    // 状态
+    status: [],
   },
 
   effects: {
@@ -36,7 +39,27 @@ export default {
       };
     },
     setContractList(state, action) {
+      const {
+        payload: { contracts, page },
+      } = action;
+      return {
+        ...state,
+        contracts: state.contracts.concat(contracts),
+        page: page,
+      };
+    },
+    // 设置合同状态参数
+    setParamStatus(state, action) {
+      // console.log( "设置合同状态参数", action );
       const { payload } = action;
+      return {
+        ...state,
+        status: Array.isArray(payload.status) ? payload.status : [],
+      };
+    },
+    // 清空数据列表
+    clearContractList(state, action) {
+      console.log('action', action);
       return {
         ...state,
         contracts: [],

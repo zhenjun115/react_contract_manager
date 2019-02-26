@@ -18,7 +18,7 @@ import {
   Menu,
   List,
   Timeline,
-  Progress,
+  // Progress,
   Spin,
   // Result,
   Steps,
@@ -51,7 +51,14 @@ notification.config({
   laborContract,
   initing: loading.effects['laborContract/create'],
 }))
-@Form.create({})
+@Form.create({
+  // 获取表单变更通知
+  onValuesChange(props, changedValues, allValues) {
+    // console.log( "props", props );
+    // console.log( "表单变化", changedValues );
+    // console.log( "表单字段", allValues );
+  },
+})
 class ContractCreate extends PureComponent {
   componentDidMount() {
     const {
@@ -68,6 +75,46 @@ class ContractCreate extends PureComponent {
     });
   }
 
+  // 保存合同基本基本信息
+  saveContractInfo = e => {
+    e.preventDefault();
+
+    const {
+      dispatch,
+      form: { getFieldsError, validateFields, getFieldsValue },
+      laborContract: { contract },
+    } = this.props;
+
+    validateFields();
+
+    if (this.hasInfoErros(getFieldsError())) {
+      return;
+    }
+
+    dispatch({
+      type: 'laborContract/saveInfo',
+      payload: Object.assign(getFieldsValue(), { contractId: contract.contractId }),
+      callback: errCode => {
+        // success
+        let msg = '';
+        let details = '';
+
+        if (errCode === 1) {
+          msg = '保存成功';
+          details = '保存基本信息成功';
+        } else {
+          msg = '保存失败';
+          details = '保存基本信息失败';
+        }
+
+        notification.open({
+          message: msg,
+          description: details,
+        });
+      },
+    });
+  };
+
   // 保存合同签约主体信息
   saveContractParty = e => {
     e.preventDefault();
@@ -80,9 +127,10 @@ class ContractCreate extends PureComponent {
 
     validateFields();
 
-    if (this.hasErrors(getFieldsError())) {
+    if (this.hasPartyErrors(getFieldsError())) {
       return;
     }
+    // console.log( getFieldsValue() );
 
     dispatch({
       type: 'laborContract/saveParty',
@@ -130,12 +178,17 @@ class ContractCreate extends PureComponent {
     });
   };
 
-  hasErrors = fields => {
-    const { partyA, partyB } = fields;
+  hasPartyErrors = fields => {
+    const { partyMain, partyOther } = fields;
     return (
-      Object.keys(partyA).some(field => partyA[field]) ||
-      Object.keys(partyB).some(field => partyB[field])
+      Object.keys(partyMain).some(field => partyMain[field]) ||
+      Object.keys(partyOther).some(field => partyOther[field])
     );
+  };
+
+  hasInfoErros = fields => {
+    const { contract } = fields;
+    return Object.keys(contract).some(field => contract[field]);
   };
 
   render() {
@@ -309,64 +362,124 @@ class ContractCreate extends PureComponent {
         <Spin spinning={initing}>
           <Tabs type="card" tabPosition="right">
             <TabPane tab="基本信息" key="1">
-              <Card bordered={false} style={{ marginBottom: 24 }}>
-                <Form onSubmit={this.saveContractParty}>
-                  <Form.Item
-                    label="甲方"
-                    labelCol={{ lg: { span: 1 } }}
-                    wrapperCol={{ lg: { span: 8 } }}
-                  >
-                    {getFieldDecorator('partyA.name', {
-                      rules: [{ required: true, message: '甲方不能为空!' }],
-                    })(<Input placeholder="主体信息" />)}
+              <Card bordered={false} style={{ marginBottom: 24 }} title="基本信息">
+                <Form>
+                  <Form.Item style={{ marginBottom: 24 }} label="文件名称">
+                    {getFieldDecorator('contract.conname', {
+                      rules: [
+                        {
+                          required: true,
+                          message: '请输入合同名称',
+                        },
+                      ],
+                    })(<Input placeholder="请输入合同名称" />)}
                   </Form.Item>
 
-                  <Form.Item wrapperCol={{ lg: { span: 8, offset: 1 } }}>
-                    {getFieldDecorator('partyA.address', {
-                      rules: [{ required: true, message: '通讯地址不能为空!' }],
-                    })(<Input placeholder="通讯地址" />)}
+                  <Form.Item style={{ marginBottom: 24 }} label="文档简介">
+                    {getFieldDecorator('contract.description', {
+                      rules: [
+                        {
+                          required: true,
+                          message: '请输入文档简介',
+                        },
+                      ],
+                    })(
+                      <Input.TextArea
+                        style={{ minHeight: 32 }}
+                        placeholder="请输入劳务合同模版简介"
+                        rows={6}
+                      />
+                    )}
                   </Form.Item>
-
-                  <Form.Item
-                    label="乙方"
-                    labelCol={{ lg: { span: 1 } }}
-                    wrapperCol={{ lg: { span: 8 } }}
-                  >
-                    {getFieldDecorator('partyB.name', {
-                      rules: [{ required: true, message: '乙方不能为空!' }],
-                    })(<Input placeholder="姓名" />)}
-                  </Form.Item>
-                  <Form.Item wrapperCol={{ lg: { span: 8, offset: 1 } }}>
-                    {getFieldDecorator('partyB.phone', {
-                      rules: [{ required: true, message: '手机号码不能为空!' }],
-                    })(<Input placeholder="手机号码" />)}
-                  </Form.Item>
-                  <Form.Item wrapperCol={{ lg: { span: 8, offset: 1 } }}>
-                    {getFieldDecorator('partyB.idNumber', {
-                      rules: [{ required: true, message: '身份证号不能为空!' }],
-                    })(<Input placeholder="身份证号" />)}
-                  </Form.Item>
-                  <Form.Item wrapperCol={{ lg: { span: 8, offset: 1 } }}>
-                    {getFieldDecorator('partyB.address', {
-                      rules: [{ required: true, message: '通讯地址不能为空!' }],
-                    })(<Input placeholder="通讯地址" />)}
-                  </Form.Item>
-                  <Form.Item wrapperCol={{ span: 23, offset: 1 }}>
-                    <Button type="primary" htmlType="submit">
+                  <Form.Item wrapperCol={{ span: 23 }}>
+                    <Button type="primary" onClick={this.saveContractInfo}>
                       保存
-                    </Button>{' '}
-                    <Button type="default">重置</Button>
+                    </Button>
                   </Form.Item>
                 </Form>
               </Card>
             </TabPane>
-            <TabPane tab="附件文件" key="2">
+            <TabPane tab="签约主体" key="2">
+              <Card bordered={false} style={{ marginBottom: 24 }} title="甲方信息">
+                <Form name="party">
+                  <Form.Item
+                    label="主体"
+                    labelCol={{ lg: { span: 1 } }}
+                    wrapperCol={{ lg: { span: 8 } }}
+                  >
+                    {getFieldDecorator('partyMain.name', {
+                      rules: [{ required: true, message: '甲方不能为空!' }],
+                    })(<Input placeholder="主体信息" />)}
+                  </Form.Item>
+
+                  <Form.Item
+                    label="地址"
+                    labelCol={{ lg: { span: 1 } }}
+                    wrapperCol={{ lg: { span: 8 } }}
+                  >
+                    {getFieldDecorator('partyMain.address', {
+                      rules: [{ required: true, message: '通讯地址不能为空!' }],
+                    })(<Input placeholder="通讯地址" />)}
+                  </Form.Item>
+                </Form>
+              </Card>
+              <Card bordered={false} style={{ marginBottom: 24 }} title="乙方信息">
+                <Form>
+                  <Form.Item
+                    label="主体"
+                    labelCol={{ lg: { span: 1 } }}
+                    wrapperCol={{ lg: { span: 8 } }}
+                  >
+                    {getFieldDecorator('partyOther.name', {
+                      rules: [{ required: true, message: '乙方不能为空!' }],
+                    })(<Input placeholder="姓名" />)}
+                  </Form.Item>
+                  <Form.Item
+                    label="手机"
+                    labelCol={{ lg: { span: 1 } }}
+                    wrapperCol={{ lg: { span: 8 } }}
+                  >
+                    {getFieldDecorator('partyOther.phone', {
+                      rules: [{ required: true, message: '手机号码不能为空!' }],
+                    })(<Input placeholder="手机号码" />)}
+                  </Form.Item>
+                  <Form.Item
+                    label="身份"
+                    labelCol={{ lg: { span: 1 } }}
+                    wrapperCol={{ lg: { span: 8 } }}
+                  >
+                    {getFieldDecorator('partyOther.idNumber', {
+                      rules: [{ required: true, message: '身份证号不能为空!' }],
+                    })(<Input placeholder="身份证号" />)}
+                  </Form.Item>
+                  <Form.Item
+                    label="地址"
+                    labelCol={{ lg: { span: 1 } }}
+                    wrapperCol={{ lg: { span: 8 } }}
+                  >
+                    {getFieldDecorator('partyOther.address', {
+                      rules: [{ required: true, message: '通讯地址不能为空!' }],
+                    })(<Input placeholder="通讯地址" />)}
+                  </Form.Item>
+                </Form>
+              </Card>
+              {/* <Card> */}
+              <Form>
+                <Form.Item wrapperCol={{ span: 23 }}>
+                  <Button type="primary" onClick={this.saveContractParty}>
+                    保存
+                  </Button>
+                </Form.Item>
+              </Form>
+              {/* </Card> */}
+            </TabPane>
+            <TabPane tab="合同附件" key="3">
               <Card extra={extraContent} title="附件">
                 <Upload
                   name="file"
                   listType="picture-card"
                   showUploadList={false}
-                  action="http://10.80.10.151:8080/labor/contract/file/add"
+                  action="http://127.0.0.1:8080/labor/contract/file/add"
                   multiple={false}
                   className="uploadBar"
                   onChange={this.handleChange}
@@ -405,7 +518,7 @@ class ContractCreate extends PureComponent {
                 />
               </Card>
             </TabPane>
-            <TabPane tab="审批状态" key="3">
+            <TabPane tab="合同流程" key="4">
               <Card>
                 <Result
                   // type="success"
@@ -417,7 +530,7 @@ class ContractCreate extends PureComponent {
                 />
               </Card>
             </TabPane>
-            <TabPane tab="合同变更" key="4">
+            <TabPane tab="合同变更" key="5">
               <Card>
                 <Timeline>
                   <Timeline.Item>Create a services site 2015-09-01</Timeline.Item>
@@ -433,7 +546,7 @@ class ContractCreate extends PureComponent {
               </Card>
             </TabPane>
 
-            <TabPane tab="其他" key="5">
+            <TabPane tab="其他" key="6">
               <Card>
                 <Skeleton avatar paragraph={{ rows: 4 }} />
               </Card>
