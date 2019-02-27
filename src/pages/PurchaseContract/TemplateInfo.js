@@ -71,7 +71,8 @@ class TemplateInfo extends PureComponent {
         template: { templateId },
       },
     } = this.props;
-    this.openNotification('查看pageooffice', templateId);
+
+    window.open(`http://10.80.10.151:8080/pageoffice/demoTemplate?templateId=${templateId}`);
   };
 
   render() {

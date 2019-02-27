@@ -54,7 +54,7 @@ export default [
       { path: '/dashboard/workplace/contract/:status', component: './Dashboard/Contract' },
 
       // 主页--模版
-      { path: '/dashboard/workplace/template', component: './Dashboard/Template' },
+      { path: '/dashboard/workplace/template/:catCode', component: './Dashboard/Template' },
 
       // 合同--状态
       { path: '/contract/status/:contractId', component: './Dashboard/Status' },

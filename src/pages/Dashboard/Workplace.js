@@ -25,15 +25,9 @@ class Workplace extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
 
-    // TODO: 获取用户在线信息
     // 获取用户
     dispatch({
       type: 'user/fetchCurrent',
-    });
-
-    // TODO: 获取通知
-    dispatch({
-      type: 'activity/fetchNotice',
     });
 
     // 获取当前待办任务列表
@@ -44,12 +38,18 @@ class Workplace extends PureComponent {
 
     // 获取订立中的合同
     dispatch({
-      type: 'contract/fetchCarryout',
+      type: 'contract/fetch',
+      payload: {
+        status: ['progress']
+      }
     });
 
     // 获取履行中的合同
     dispatch({
-      type: 'contract/fetchProgress',
+      type: 'contract/fetch',
+      payload: {
+        status: ['carryout']
+      }
     });
   }
 
@@ -187,7 +187,7 @@ class Workplace extends PureComponent {
             >
               <EditableLinkGroup
                 onAdd={() => {
-                  router.push('/contract/template');
+                  router.push('/dashboard/workplace/template');
                 }}
                 links={shortcutAction}
                 linkElement={Link}

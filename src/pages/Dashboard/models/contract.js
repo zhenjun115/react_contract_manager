@@ -1,4 +1,5 @@
-import { fetchContractList } from '@/services/contract';
+import { fetchContractList, fetchContracts } from '@/services/contract';
+
 export default {
   namespace: 'contract',
 
@@ -9,11 +10,20 @@ export default {
     carryout: [],
     // 所有列表
     contracts: [],
+    
+    status: [],
 
-    page: { index: 1, size: 5 },
+    page: { pageIndex: 1, pageSize: 5 },
   },
 
   effects: {
+    *fetch( {payload}, {call,put} ) {
+      const response = yield call( fetchContracts, payload );
+      yield put( {
+        type: 'saveContracts',
+        payload: response.payload
+      });
+    },
     // 查询合同列表
     *fetchContracts({ payload }, { call, put }) {
       const response = yield call(fetchContractList, payload);
@@ -53,7 +63,9 @@ export default {
         contracts: [],
         progress: [],
         carryout: [],
-        page: { index: 1, size: 5 },
+        status: [],
+        catCode: [],
+        page: { pageIndex: 1, pageSize: 5 },
       };
     },
     savePage(state, action) {
@@ -66,6 +78,15 @@ export default {
         page: { index: pageIndex, size: pageSize },
       };
     },
+    setParams( state, action ) {
+      const { payload: { status, catCode } } = action;
+
+      return {
+        ...state,
+        status: Array.isArray( status ) ? status : [],
+        catCode: Array.isArray( catCode ) ? catCode : []
+      }
+    },
     saveContracts(state, action) {
       const {
         payload: {
@@ -76,8 +97,15 @@ export default {
       return {
         ...state,
         contracts: state.contracts.concat(contracts),
-        page: { index: pageIndex, size: pageSize },
+        page: { pageIndex: pageIndex, pageSize: pageSize },
       };
+    },
+    clearContracts( state, action ) {
+      return {
+        ...state,
+        contracts: [],
+        page: { pageIndex: 1, pageSize: 5 }
+      }
     },
     saveCarryout(state, action) {
       const {

@@ -141,20 +141,20 @@ class Template extends Component {
           <Form layout="inline">
             <StandardFormRow title="所属类目" block style={{ paddingBottom: 11 }}>
               <FormItem>
-                {getFieldDecorator('category')(
+                {getFieldDecorator('catCode')(
                   <TagSelect expandable>
-                    <TagSelect.Option value="cat1">人事合同</TagSelect.Option>
-                    <TagSelect.Option value="cat2">劳务合同</TagSelect.Option>
-                    <TagSelect.Option value="cat3">租赁合同</TagSelect.Option>
-                    <TagSelect.Option value="cat4">销售合同</TagSelect.Option>
-                    <TagSelect.Option value="cat5">采购合同</TagSelect.Option>
-                    <TagSelect.Option value="cat6">借款合同</TagSelect.Option>
-                    <TagSelect.Option value="cat7">邀约合同</TagSelect.Option>
-                    <TagSelect.Option value="cat8">对赌协议</TagSelect.Option>
-                    <TagSelect.Option value="cat9">施工合同</TagSelect.Option>
-                    <TagSelect.Option value="cat10">合作协议</TagSelect.Option>
-                    <TagSelect.Option value="cat11">其他一</TagSelect.Option>
-                    <TagSelect.Option value="cat12">其他二</TagSelect.Option>
+                    <TagSelect.Option value="cat_1">采购合同</TagSelect.Option>
+                    <TagSelect.Option value="cat_2">劳务合同</TagSelect.Option>
+                    <TagSelect.Option value="cat_3">租赁合同</TagSelect.Option>
+                    <TagSelect.Option value="cat_4">销售合同</TagSelect.Option>
+                    <TagSelect.Option value="cat_5">人事合同</TagSelect.Option>
+                    <TagSelect.Option value="cat_6">借款合同</TagSelect.Option>
+                    <TagSelect.Option value="cat_7">邀约合同</TagSelect.Option>
+                    <TagSelect.Option value="cat_8">对赌协议</TagSelect.Option>
+                    <TagSelect.Option value="cat_9">施工合同</TagSelect.Option>
+                    <TagSelect.Option value="cat_10">合作协议</TagSelect.Option>
+                    <TagSelect.Option value="cat_11">其他一</TagSelect.Option>
+                    <TagSelect.Option value="cat_12">其他二</TagSelect.Option>
                   </TagSelect>
                 )}
               </FormItem>

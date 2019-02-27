@@ -9,12 +9,12 @@ module.exports = {
   collapse: true,
   shortcutAction: [
     {
-      title: '人事合同',
-      href: '/contract/template/cat1',
+      title: '采购合同',
+      href: '/dashboard/workplace/template/cat_1',
     },
     {
       title: '劳务合同',
-      href: '/contract/template/cat2',
+      href: '/dashboard/workplace/template/cat_2',
     },
     {
       title: '租赁合同',
@@ -25,7 +25,7 @@ module.exports = {
       href: '',
     },
     {
-      title: '采购合同',
+      title: '人事合同',
       href: '',
     },
     {

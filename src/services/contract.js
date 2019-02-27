@@ -2,6 +2,13 @@ import request from '@/utils/request';
 
 const host = 'http://10.80.10.151:8080';
 
+// 获取合同
+export async function fetchContracts( params ) {
+  return request( `${host}/contract/fetch`, {
+    method: 'POST',
+    body: params
+  } );
+}
 // 获取合同列表
 export async function fetchContractList(params) {
   return request(`${host}/contract/fetch/all`, {

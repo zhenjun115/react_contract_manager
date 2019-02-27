@@ -1,16 +1,13 @@
 import React, { Component, Fragment } from 'react';
 // import moment from 'moment';
 import { connect } from 'dva';
-import { Form, Card, List, Tag, Icon, Button, Select } from 'antd';
-import router from 'umi/router';
+import { Form, Card, List, Tag, Icon, Button } from 'antd';
 
 import TagSelect from '@/components/TagSelect';
 import StandardFormRow from '@/components/StandardFormRow';
 import styles from './Contract.less';
 
 const FormItem = Form.Item;
-
-const pageSize = 5;
 
 @connect(({ contractTemplate, contract, loading }) => ({
   contractTemplate,
@@ -20,23 +17,33 @@ const pageSize = 5;
 @Form.create({
   // onValuesChange({ dispatch }, changedValues, allValues) {
   onValuesChange({ dispatch }, changedValues, allValues) {
-    const { category } = allValues;
+    const { catCode, status } = allValues;
 
-    // 表单项变化时请求数据
-    dispatch({
-      // type: 'list/fetch',
-      type: 'contract/fetchContracts',
-      payload: {
-        // 分页
-        count: 5,
-        catCodes: category,
-      },
+    dispatch( {
+      type: 'contract/clearContracts',
+      payload: {}
     });
+
+    // 设置查询参数
+    dispatch( {
+      type: 'contract/setParams',
+      payload: {
+        status: status,
+        catCode: catCode
+      }
+    } );
+
+    dispatch( {
+      type: 'contract/fetch',
+      payload: {
+        status: status,
+        catCode: catCode
+      }
+    })
   },
 })
 class Contract extends Component {
   componentDidMount() {
-    // console.info( this.props.match );
     const {
       dispatch,
       form,
@@ -44,9 +51,6 @@ class Contract extends Component {
         params: { status },
       },
     } = this.props;
-    const params = {};
-
-    // console.log( "获取状态:", status );
 
     // 初始化
     dispatch({
@@ -54,37 +58,46 @@ class Contract extends Component {
     });
 
     if (status) {
-      params.status = status;
       form.setFieldsValue({ status: [status] });
     }
 
-    dispatch({
-      type: 'contract/fetchContracts',
+    // 设置 status
+    dispatch( {
+      type: 'contract/setParams',
       payload: {
-        contract: { status: status },
-        page: { pageIndex: 1, pageSize: 5 },
+        status: [status]
+      }
+    });
+
+    dispatch({
+      type: 'contract/fetch',
+      payload: {
+        status: [status],
       },
     });
   }
 
-  // TODO: 加载更多
-  // TODO: 更新数据
   fetchMore = () => {
     const {
       dispatch,
-      match: {
-        params: { status },
-      },
       contract: {
-        page: { index },
+        page,
+        status,
+        catCode
       },
     } = this.props;
 
+    dispatch( {
+      type: 'contract/clearContracts',
+      payload: {}
+    });
+
     dispatch({
-      type: 'contract/fetchContracts',
+      type: 'contract/fetch',
       payload: {
-        contract: { status: status },
-        page: { pageIndex: index + 1 },
+        status: status,
+        catCode: catCode,
+        page: { pageIndex: page.pageIndex + 1 },
       },
     });
   };
@@ -148,20 +161,20 @@ class Contract extends Component {
           <Form layout="inline">
             <StandardFormRow title="所属类目" block style={{ paddingBottom: 11 }}>
               <FormItem>
-                {getFieldDecorator('category')(
+                {getFieldDecorator('catCode')(
                   <TagSelect expandable>
-                    <TagSelect.Option value="cat1">人事合同</TagSelect.Option>
-                    <TagSelect.Option value="cat2">劳务合同</TagSelect.Option>
-                    <TagSelect.Option value="cat3">租赁合同</TagSelect.Option>
-                    <TagSelect.Option value="cat4">销售合同</TagSelect.Option>
-                    <TagSelect.Option value="cat5">采购合同</TagSelect.Option>
-                    <TagSelect.Option value="cat6">借款合同</TagSelect.Option>
-                    <TagSelect.Option value="cat7">邀约合同</TagSelect.Option>
-                    <TagSelect.Option value="cat8">对赌协议</TagSelect.Option>
-                    <TagSelect.Option value="cat9">施工合同</TagSelect.Option>
-                    <TagSelect.Option value="cat10">合作协议</TagSelect.Option>
-                    <TagSelect.Option value="cat11">其他一</TagSelect.Option>
-                    <TagSelect.Option value="cat12">其他二</TagSelect.Option>
+                    <TagSelect.Option value="cat_1">采购合同</TagSelect.Option>
+                    <TagSelect.Option value="cat_2">劳务合同</TagSelect.Option>
+                    <TagSelect.Option value="cat_3">租赁合同</TagSelect.Option>
+                    <TagSelect.Option value="cat_4">销售合同</TagSelect.Option>
+                    <TagSelect.Option value="cat_5">人事合同</TagSelect.Option>
+                    <TagSelect.Option value="cat_6">借款合同</TagSelect.Option>
+                    <TagSelect.Option value="cat_7">邀约合同</TagSelect.Option>
+                    <TagSelect.Option value="cat_8">对赌协议</TagSelect.Option>
+                    <TagSelect.Option value="cat_9">施工合同</TagSelect.Option>
+                    <TagSelect.Option value="cat_10">合作协议</TagSelect.Option>
+                    <TagSelect.Option value="cat_11">其他一</TagSelect.Option>
+                    <TagSelect.Option value="cat_12">其他二</TagSelect.Option>
                   </TagSelect>
                 )}
               </FormItem>
@@ -200,7 +213,7 @@ class Contract extends Component {
                   // <IconText type="like-o" text={item.like} />,
                   // <IconText type="message" text={item.message} />,
                   // <Button>使用模版</Button>
-                  <Button type="primary" onClick={() => this.viewContract(item.contractId)}>
+                  <Button type="primary" onClick={() => this.viewContract(item.contractId)} size="small">
                     查看合同
                   </Button>,
                 ]}
@@ -210,7 +223,7 @@ class Contract extends Component {
                   title={
                     <div>
                       <a className={styles.listItemMetaTitle} href={item.href}>
-                        {item.title}
+                        {item.conname}
                       </a>
                     </div>
                   }

@@ -181,6 +181,17 @@ class ContractEdit extends PureComponent {
     return Object.keys(contract).some(field => contract[field]);
   };
 
+  viewPageOffice = e => {
+    e.preventDefault();
+    const {
+      laborContract: {
+        contract: { contractId },
+      },
+    } = this.props;
+
+    window.open(`http://10.80.10.151:8080/pageoffice/demoContract?contractId=${contractId}`);
+  };
+
   render() {
     const {
       laborContract: {
@@ -485,8 +496,8 @@ class ContractEdit extends PureComponent {
                       actions={[
                         <a
                           onClick={e => {
-                            e.preventDefault();
-                            this.showViewModal(item);
+                            // e.preventDefault();
+                            this.viewPageOffice( e );
                           }}
                         >
                           查看
