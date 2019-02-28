@@ -6,8 +6,7 @@ import router from 'umi/router';
 import styles from './Template.less';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
-@connect(({ contractTemplate, contractForm, loading, purchaseTemplate }) => ({
-  contractTemplate,
+@connect(({ contractForm, loading, purchaseTemplate }) => ({
   contractForm,
   fetching: loading.effects['purchaseTemplate/fetch'],
   purchaseTemplate,

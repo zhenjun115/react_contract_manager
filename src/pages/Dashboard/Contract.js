@@ -9,37 +9,35 @@ import styles from './Contract.less';
 
 const FormItem = Form.Item;
 
-@connect(({ contractTemplate, contract, loading }) => ({
-  contractTemplate,
+@connect(({ contract }) => ({
   contract,
-  loading: loading.models.contractTemplate,
 }))
 @Form.create({
   // onValuesChange({ dispatch }, changedValues, allValues) {
   onValuesChange({ dispatch }, changedValues, allValues) {
     const { catCode, status } = allValues;
 
-    dispatch( {
+    dispatch({
       type: 'contract/clearContracts',
-      payload: {}
+      payload: {},
     });
 
     // 设置查询参数
-    dispatch( {
+    dispatch({
       type: 'contract/setParams',
       payload: {
         status: status,
-        catCode: catCode
-      }
-    } );
+        catCode: catCode,
+      },
+    });
 
-    dispatch( {
+    dispatch({
       type: 'contract/fetch',
       payload: {
         status: status,
-        catCode: catCode
-      }
-    })
+        catCode: catCode,
+      },
+    });
   },
 })
 class Contract extends Component {
@@ -62,11 +60,11 @@ class Contract extends Component {
     }
 
     // 设置 status
-    dispatch( {
+    dispatch({
       type: 'contract/setParams',
       payload: {
-        status: [status]
-      }
+        status: [status],
+      },
     });
 
     dispatch({
@@ -80,16 +78,12 @@ class Contract extends Component {
   fetchMore = () => {
     const {
       dispatch,
-      contract: {
-        page,
-        status,
-        catCode
-      },
+      contract: { page, status, catCode },
     } = this.props;
 
-    dispatch( {
+    dispatch({
       type: 'contract/clearContracts',
-      payload: {}
+      payload: {},
     });
 
     dispatch({
@@ -213,7 +207,11 @@ class Contract extends Component {
                   // <IconText type="like-o" text={item.like} />,
                   // <IconText type="message" text={item.message} />,
                   // <Button>使用模版</Button>
-                  <Button type="primary" onClick={() => this.viewContract(item.contractId)} size="small">
+                  <Button
+                    type="primary"
+                    onClick={() => this.viewContract(item.contractId)}
+                    size="small"
+                  >
                     查看合同
                   </Button>,
                 ]}

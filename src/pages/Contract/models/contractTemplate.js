@@ -1,5 +1,5 @@
 import { queryFakeList, removeFakeList, addFakeList, updateFakeList } from '@/services/api';
-import { fetchList } from '@/services/contractTemplate';
+import { fetchList } from '@/services/template';
 
 export default {
   namespace: 'contractTemplate',

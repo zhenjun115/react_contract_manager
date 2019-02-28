@@ -21,9 +21,8 @@ const FormItem = Form.Item;
 
 const pageSize = 5;
 
-@connect(({ list, contractTemplate, contractForm, loading }) => ({
+@connect(({ list, contractForm, loading }) => ({
   list,
-  contractTemplate,
   contractForm,
   loading: loading.models.list,
 }))

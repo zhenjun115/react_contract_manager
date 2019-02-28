@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react';
-// import moment from 'moment';
 import { connect } from 'dva';
 import {
   Form,
@@ -16,66 +15,75 @@ import TagSelect from '@/components/TagSelect';
 import StandardFormRow from '@/components/StandardFormRow';
 import styles from './Template.less';
 
-// const { Option } = Select;
 const FormItem = Form.Item;
 
 const pageSize = 5;
 
-@connect(({ list, contractTemplate, contractForm, loading }) => ({
-  list,
-  contractTemplate,
-  contractForm,
-  loading: loading.models.list,
+@connect(({ template }) => ({
+  template,
 }))
 @Form.create({
-  // onValuesChange({ dispatch }, changedValues, allValues) {
   onValuesChange({ dispatch }, changedValues, allValues) {
-    const { category } = allValues;
-    // 表单项变化时请求数据
-    // eslint-disable-next-line
-    // 模拟查询表单生效
+    const { catCode } = allValues;
     dispatch({
-      // type: 'list/fetch',
-      type: 'contractTemplate/fetch',
+      type: 'template/clearTemplateList',
+      payload: {},
+    });
+    // console.log( catCode );
+    // 表单项变化时请求数据
+    dispatch({
+      type: 'template/fetch',
       payload: {
         // 分页
-        count: 5,
-        catCodes: category,
+        catCode: catCode,
       },
     });
   },
 })
 class Template extends Component {
   componentDidMount() {
-    // console.info( this.props.match );
-    const { dispatch, form, match } = this.props;
-    const payload = {};
-    if (match.params.type) {
-      payload.catCodes = [match.params.type];
-      form.setFieldsValue({ category: [match.params.type] });
+    const {
+      dispatch,
+      form,
+      match: {
+        params: { catCode },
+      },
+    } = this.props;
+
+    if (catCode) {
+      form.setFieldsValue({ catCode: [catCode] });
     }
 
+    // 初始化
     dispatch({
-      // type: 'list/fetch',
-      type: 'contractTemplate/fetch',
-      payload: Object.assign({ count: 5 }, payload),
+      type: 'template/init',
+      payload: {},
+    });
+
+    dispatch({
+      type: 'template/fetch',
+      payload: {
+        catCode: [catCode],
+      },
     });
   }
 
-  setOwner = () => {
-    // const { form } = this.props;
-    /* form.setFieldsValue({
-      owner: ['hzj'],
-    }); */
-  };
-
   // 加载更多
   fetchMore = () => {
-    const { dispatch } = this.props;
+    const {
+      dispatch,
+      template: { page, catCode },
+    } = this.props;
+    // dispatch( {
+    //   type: 'template/init',
+    //   page: { pageIndex: page.pageIndex + 1 }
+    // });
+
     dispatch({
-      type: 'list/appendFetch',
+      type: 'template/fetch',
       payload: {
-        count: pageSize,
+        catCode: catCode,
+        page: { pageIndex: page.pageIndex + 1 },
       },
     });
   };
@@ -89,7 +97,6 @@ class Template extends Component {
       payload: { templateId: templateId },
     });
 
-    // console.log( "合同", contractForm );
     const {
       contractForm: { currenDraftId },
     } = this.props;
@@ -101,8 +108,7 @@ class Template extends Component {
   render() {
     const {
       form,
-      // list: { list },
-      contractTemplate: { list },
+      template: { templates },
       loading,
       // match
     } = this.props;
@@ -121,7 +127,7 @@ class Template extends Component {
     );
 
     const loadMore =
-      list.length > 0 ? (
+      templates.length > 0 ? (
         <div style={{ textAlign: 'center', marginTop: 16 }}>
           <Button onClick={this.fetchMore} style={{ paddingLeft: 48, paddingRight: 48 }}>
             {loading ? (
@@ -194,7 +200,7 @@ class Template extends Component {
             rowKey="id"
             itemLayout="vertical"
             loadMore={loadMore}
-            dataSource={list}
+            dataSource={templates}
             renderItem={item => (
               <List.Item
                 key={item.templateId}

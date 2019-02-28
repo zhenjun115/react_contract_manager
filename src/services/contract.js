@@ -1,13 +1,13 @@
 import request from '@/utils/request';
 
-const host = 'http://10.80.10.151:8080';
+const host = 'http://127.0.0.1:8080';
 
 // 获取合同
-export async function fetchContracts( params ) {
-  return request( `${host}/contract/fetch`, {
+export async function fetchContracts(params) {
+  return request(`${host}/contract/fetch`, {
     method: 'POST',
-    body: params
-  } );
+    body: params,
+  });
 }
 // 获取合同列表
 export async function fetchContractList(params) {
