@@ -17,7 +17,7 @@ import {
   Dropdown,
   Menu,
   List,
-  Timeline,
+  // Timeline,
   Spin,
   // Result,
   Steps,
@@ -104,6 +104,13 @@ class ContractEdit extends PureComponent {
       type: 'laborContract/fetchFilesByContractId',
       payload: contractId,
     });
+
+
+    // 4.查询合同流程相关信息
+    dispatch({
+      type: 'laborContract/fetchWorkflowByContractId',
+      payload: contractId
+    })
   }
 
   // 保存合同签约主体信息
@@ -181,6 +188,7 @@ class ContractEdit extends PureComponent {
     return Object.keys(contract).some(field => contract[field]);
   };
 
+  // 查看word文档
   viewPageOffice = e => {
     e.preventDefault();
     const {
@@ -189,8 +197,16 @@ class ContractEdit extends PureComponent {
       },
     } = this.props;
 
-    window.open(`http://127.0.0.1:8080/pageoffice/demoContract?contractId=${contractId}`);
+    window.open(`http://192.168.199.206:8080/pageoffice/demoContract?contractId=${contractId}`);
   };
+
+  // 查看合同word附件文件
+  viewWordFile = ( e, file ) => {
+    e.preventDefault();
+    console.log( "文件信息", file );
+
+    window.open(`http://192.168.199.206:8080/pageoffice/demoContractFile?fileId=${file.fileId}`);
+  }
 
   render() {
     const {
@@ -230,7 +246,7 @@ class ContractEdit extends PureComponent {
               console.log(props);
             }}
           >
-            <Menu.Item key="edit">编辑</Menu.Item>
+            {/* <Menu.Item key="edit">编辑</Menu.Item> */}
             <Menu.Item key="delete">删除</Menu.Item>
           </Menu>
         }
@@ -476,7 +492,7 @@ class ContractEdit extends PureComponent {
                   name="file"
                   listType="picture-card"
                   showUploadList={false}
-                  action="http://127.0.0.1:8080/labor/contract/file/add"
+                  action="http://192.168.199.206:8080/labor/contract/file/add"
                   multiple={false}
                   className="uploadBar"
                   onChange={this.handleChange}
@@ -496,8 +512,7 @@ class ContractEdit extends PureComponent {
                       actions={[
                         <a
                           onClick={e => {
-                            // e.preventDefault();
-                            this.viewPageOffice(e);
+                            this.viewWordFile(e, item);
                           }}
                         >
                           查看
@@ -527,7 +542,7 @@ class ContractEdit extends PureComponent {
                 />
               </Card>
             </TabPane>
-            <TabPane tab="合同变更" key="5">
+            {/* <TabPane tab="合同变更" key="5">
               <Card>
                 <Timeline>
                   <Timeline.Item>Create a services site 2015-09-01</Timeline.Item>
@@ -541,9 +556,9 @@ class ContractEdit extends PureComponent {
                   <Timeline.Item>Network problems being solved 2015-09-01</Timeline.Item>
                 </Timeline>
               </Card>
-            </TabPane>
+            </TabPane> */}
 
-            <TabPane tab="其他" key="6">
+            <TabPane tab="其他" key="5">
               <Card>
                 <Skeleton avatar paragraph={{ rows: 4 }} />
               </Card>

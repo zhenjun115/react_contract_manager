@@ -11,6 +11,7 @@ export default {
     // 查询待办任务
     *fetchTasks(_, { call, put }) {
       const response = yield call(fetchTasks);
+      console.log( "任务列表", response );
       yield put({
         type: 'saveTasks',
         payload: Array.isArray(response.payload) ? response.payload : [],

@@ -1,6 +1,6 @@
 import request from '@/utils/request';
 
-const host = 'http://127.0.0.1:8080';
+const host = 'http://192.168.199.206:8080';
 
 export async function query() {
   return request(`${host}/user/fetch`);

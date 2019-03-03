@@ -17,8 +17,6 @@ import styles from './Template.less';
 
 const FormItem = Form.Item;
 
-const pageSize = 5;
-
 @connect(({ template }) => ({
   template,
 }))

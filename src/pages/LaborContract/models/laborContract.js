@@ -3,6 +3,7 @@ import {
   fetchContractById,
   fetchPartyByContractId,
   fetchFilesByContractId,
+  fetchWorkflowByContract,
   createContract,
   saveInfo,
   saveParty,
@@ -79,6 +80,11 @@ export default {
         type: 'setContractFiles',
         payload: response.payload,
       });
+    },
+
+    *fetchWorkflowByContractId( {payload}, {put,call}) {
+      const response = yield call( fetchWorkflowByContract, { contractId: payload } );
+      console.log( "获取流程信息:", response );
     },
 
     // 保存合同签订方信息

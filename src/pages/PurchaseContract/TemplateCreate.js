@@ -74,7 +74,7 @@ class TemplateCreate extends PureComponent {
     const props = {
       name: 'file',
       multiple: false,
-      action: 'http://127.0.0.1:8080/purchase/template/upload',
+      action: 'http://192.168.199.206:8080/purchase/template/upload',
       headers: { Authorization: getJwtToken() },
       onChange(info) {
         const {

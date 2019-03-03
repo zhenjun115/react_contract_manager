@@ -32,7 +32,7 @@ class Workplace extends PureComponent {
 
     // 获取当前待办任务列表
     dispatch({
-      type: 'activity/tasks/fetch',
+      type: 'activity/fetchTasks',
       payload: {},
     });
 
