@@ -520,7 +520,7 @@ class ContractCreate extends PureComponent {
                       ]}
                     >
                       <List.Item.Meta
-                        avatar={<Avatar src={item.logo} shape="square" size="large" />}
+                        avatar={<Avatar shape="square" size="large" />}
                         title={<a href={item.href}>{item.fileName || item.name}</a>}
                         description={item.subDescription}
                       />
