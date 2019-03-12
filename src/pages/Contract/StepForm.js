@@ -457,7 +457,7 @@ class StepForm extends PureComponent {
                 name="file"
                 listType="picture-card"
                 showUploadList={false}
-                action="http://10.80.10.151:8080/contract/file/add"
+                action="http://192.168.199.206:8080/contract/file/add"
                 multiple={false}
                 className="uploadBar"
                 onChange={this.handleChange}

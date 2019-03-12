@@ -9,10 +9,8 @@ export default {
       list: [],
       pagination: {},
     },
-    data: {
-      list: [],
-      pagination: {},
-    },
+
+    keyword: '',
   },
 
   effects: {

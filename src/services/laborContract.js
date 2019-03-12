@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 
-const host = 'http://10.80.10.151:8080';
-// const host = 'http://10.80.10.151:9090';
+const host = 'http://192.168.199.206:8080';
+// const host = 'http://127.0.0.1:9090';
 
 // 获取合同列表
 export async function fetchContract(param) {
@@ -31,11 +31,11 @@ export async function fetchFilesByContractId(param) {
   });
 }
 
-export async function fetchWorkflowByContract( param ) {
-  console.log( '获取合同流程信息', param );
-  return request( `${host}/labor/contract/workflow`, {
+export async function fetchWorkflowByContract(param) {
+  console.log('获取合同流程信息', param);
+  return request(`${host}/labor/contract/workflow`, {
     method: 'POST',
-    body: param
+    body: param,
   });
 }
 

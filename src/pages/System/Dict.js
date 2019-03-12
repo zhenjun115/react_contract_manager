@@ -262,27 +262,16 @@ class Dict extends PureComponent {
     });
   };
 
-  handleSearch = e => {
-    e.preventDefault();
+  // 搜索字典
+  handleSearch = value => {
+    const { dispatch } = this.props;
 
-    const { dispatch, form } = this.props;
-
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-
-      const values = {
-        ...fieldsValue,
-        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
-      };
-
-      this.setState({
-        formValues: values,
-      });
-
-      dispatch({
-        type: 'dict/fetch',
-        payload: values,
-      });
+    // 发起搜索请求
+    dispatch({
+      type: 'dict/fetch',
+      payload: {
+        keyword: value,
+      },
     });
   };
 
@@ -322,29 +311,6 @@ class Dict extends PureComponent {
     this.handleUpdateModalVisible();
   };
 
-  renderSimpleForm() {
-    const {
-      form: { getFieldDecorator },
-    } = this.props;
-
-    return (
-      <div style={{ textAlign: 'center' }}>
-        <Form onSubmit={this.handleSearch} layout="inline">
-          <FormItem>
-            {getFieldDecorator('name')(
-              <Input placeholder="请输入字典值或者名称" size="large" style={{ width: 522 }} />
-            )}
-          </FormItem>
-          <FormItem>
-            <Button type="primary" htmlType="submit" size="large">
-              查询
-            </Button>
-          </FormItem>
-        </Form>
-      </div>
-    );
-  }
-
   render() {
     const {
       dict: { dicts },
@@ -367,8 +333,21 @@ class Dict extends PureComponent {
       handleUpdateModalVisible: this.handleUpdateModalVisible,
       handleUpdate: this.handleUpdate,
     };
+
+    // 内容搜索
+    const mainSearch = (
+      <div style={{ textAlign: 'center' }}>
+        <Input.Search
+          placeholder="字典值或者名称"
+          enterButton="搜索"
+          size="large"
+          onSearch={value => this.handleSearch(value)}
+          style={{ width: 522 }}
+        />
+      </div>
+    );
     return (
-      <PageHeaderWrapper content={this.renderSimpleForm()}>
+      <PageHeaderWrapper content={mainSearch}>
         <Card bordered={false}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>

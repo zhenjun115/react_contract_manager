@@ -35,6 +35,7 @@ export default {
     searchOpFlag: false,
     keyword: '',
     status: [],
+    workflow: {},
   },
 
   effects: {
@@ -82,9 +83,14 @@ export default {
       });
     },
 
-    *fetchWorkflowByContractId( {payload}, {put,call}) {
-      const response = yield call( fetchWorkflowByContract, { contractId: payload } );
-      console.log( "获取流程信息:", response );
+    *fetchWorkflowByContractId({ payload }, { put, call }) {
+      const response = yield call(fetchWorkflowByContract, { contractId: payload });
+      // console.log( "获取流程信息:", response );
+      // 设置流程信息
+      yield put({
+        type: 'setWorkflow',
+        payload: response.payload,
+      });
     },
 
     // 保存合同签订方信息
@@ -215,6 +221,20 @@ export default {
       return {
         ...state,
         fileList: state.fileList.concat(payload),
+      };
+    },
+
+    // 设置流程信息
+    setWorkflow(state, action) {
+      const { payload } = action;
+      console.log(payload);
+      return {
+        ...state,
+        workflow: {
+          ...payload,
+          // hisTaskList: payload.hisTaskList,
+          // taskList: payload.taskList
+        },
       };
     },
   },

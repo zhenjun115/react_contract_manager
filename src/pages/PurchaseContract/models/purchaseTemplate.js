@@ -1,9 +1,4 @@
-import {
-  fetchTemplate,
-  fetchTemplateById,
-  createTemplate,
-  fetchParamsByTemplateId,
-} from '@/services/purchaseTemplate';
+import { fetchTemplate, fetchTemplateById, createTemplate } from '@/services/purchaseTemplate';
 
 export default {
   namespace: 'purchaseTemplate',
@@ -13,8 +8,12 @@ export default {
     // 单个模版
     template: {},
 
-    // 模版参数
-    templateParams: [],
+    keyword: '',
+
+    page: {
+      pageIndex: 1,
+      pageSize: 5,
+    },
   },
 
   effects: {
@@ -23,14 +22,6 @@ export default {
       yield put({
         type: 'setTemplateList',
         payload: response.payload,
-      });
-    },
-
-    *changeTemplateParams({ payload }, { put }) {
-      console.log('更新后的模版参数', payload);
-      yield put({
-        type: 'setTemplateParams',
-        payload: Array.isArray(payload) ? payload : [],
       });
     },
 
@@ -44,16 +35,6 @@ export default {
       });
     },
 
-    // 获取模版参数
-    *fetchParamsByTemplateId({ payload }, { put, call }) {
-      const response = yield call(fetchParamsByTemplateId, payload);
-
-      yield put({
-        type: 'setTemplateParams',
-        payload: Array.isArray(response.payload) ? response.payload : [],
-      });
-    },
-
     // 保存采购模版信息
     *save({ payload, callback }, { call }) {
       const response = yield call(createTemplate, payload);
@@ -64,6 +45,13 @@ export default {
   },
 
   reducers: {
+    // 初始化模版列表
+    init(state, action) {
+      return {
+        ...state,
+        templates: [],
+      };
+    },
     initTemplateState(state, action) {
       return {
         ...state,
@@ -96,15 +84,6 @@ export default {
       return {
         ...state,
         template: payload,
-      };
-    },
-
-    // 设置当前模版参数
-    setTemplateParams(state, action) {
-      const { payload } = action;
-      return {
-        ...state,
-        templateParams: payload,
       };
     },
     // 设置当前操作的合同草稿编号

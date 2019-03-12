@@ -14,12 +14,12 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 class Template extends Component {
   componentDidMount() {
     // console.info( this.props.match );
-    const { dispatch, form, match, purchaseTemplate } = this.props;
-    const payload = {};
-    if (match.params.type) {
-      payload.catCodes = [match.params.type];
-      form.setFieldsValue({ category: [match.params.type] });
-    }
+    const { dispatch, purchaseTemplate } = this.props;
+    // const payload = {};
+    // if (match.params.type) {
+    //   payload.catCodes = [match.params.type];
+    //   form.setFieldsValue({ category: [match.params.type] });
+    // }
 
     // 初始化
     dispatch({

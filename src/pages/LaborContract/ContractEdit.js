@@ -30,6 +30,7 @@ import { connect } from 'dva';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import styles from './ContractEdit.less';
 import { getJwtToken } from '@/utils/authority';
+import { createContract } from '@/services/laborContract';
 
 const { TabPane } = Tabs;
 const RadioGroup = Radio.Group;
@@ -105,12 +106,11 @@ class ContractEdit extends PureComponent {
       payload: contractId,
     });
 
-
     // 4.查询合同流程相关信息
     dispatch({
       type: 'laborContract/fetchWorkflowByContractId',
-      payload: contractId
-    })
+      payload: contractId,
+    });
   }
 
   // 保存合同签约主体信息
@@ -197,16 +197,16 @@ class ContractEdit extends PureComponent {
       },
     } = this.props;
 
-    window.open(`http://10.80.10.151:8080/pageoffice/demoContract?contractId=${contractId}`);
+    window.open(`http://192.168.199.206:8080/pageoffice/demoContract?contractId=${contractId}`);
   };
 
   // 查看合同word附件文件
-  viewWordFile = ( e, file ) => {
+  viewWordFile = (e, file) => {
     e.preventDefault();
-    console.log( "文件信息", file );
+    console.log('文件信息', file);
 
-    window.open(`http://10.80.10.151:8080/pageoffice/demoContractFile?fileId=${file.fileId}`);
-  }
+    window.open(`http://192.168.199.206:8080/pageoffice/demoContractFile?fileId=${file.fileId}`);
+  };
 
   render() {
     const {
@@ -217,6 +217,8 @@ class ContractEdit extends PureComponent {
         fileList,
         contract,
         // status,
+        workflow,
+        createContractTask,
       },
       // loading,
       form,
@@ -268,17 +270,20 @@ class ContractEdit extends PureComponent {
         }}
       >
         <div style={{ margin: '8px 0 4px' }}>
-          <FormattedMessage id="app.result.success.step1-operator" defaultMessage="Qu Lili" />
+          {/* <FormattedMessage id="app.result.success.step1-operator" defaultMessage="Qu Lili" /> */}
+          {workflow.userId}
           <Icon style={{ marginLeft: 8 }} type="dingding-o" />
         </div>
-        <div>2016-12-12 12:32</div>
+        <div>{workflow.startTime}</div>
       </div>
     );
 
     const desc2 = (
       <div style={{ fontSize: 12, position: 'relative', left: 42 }}>
         <div style={{ margin: '8px 0 4px' }}>
-          <FormattedMessage id="app.result.success.step2-operator" defaultMessage="Zhou Maomao" />
+          {/* <FormattedMessage id="app.workflow.contract.partyMain" defaultMessage="Zhou Maomao" /> */}
+          {/* {createContractTask.assignee} */}
+          {workflow.contractCreate_editDetail ? workflow.contractCreate_editDetail.assignee : ''}
           <Icon type="dingding-o" style={{ color: '#00A0E9', marginLeft: 8 }} />
         </div>
         <div>
@@ -299,20 +304,20 @@ class ContractEdit extends PureComponent {
             marginBottom: 20,
           }}
         >
-          <FormattedMessage id="app.result.success.operate-title" defaultMessage="Project Name" />
+          {/* <FormattedMessage id="app.result.success.operate-title" defaultMessage="Project Name" /> */}
         </div>
         <Row style={{ marginBottom: 16 }}>
           <Col xs={24} sm={12} md={12} lg={12} xl={6}>
-            <span style={{ color: 'rgba(0, 0, 0, 0.85)' }}>
+            {/* <span style={{ color: 'rgba(0, 0, 0, 0.85)' }}>
               <FormattedMessage id="app.result.success.operate-id" defaultMessage="Project ID：" />
             </span>
-            23421
+            23421 */}
           </Col>
           <Col xs={24} sm={12} md={12} lg={12} xl={6}>
             <span style={{ color: 'rgba(0, 0, 0, 0.85)' }}>
               <FormattedMessage id="app.result.success.principal" defaultMessage="Principal：" />
             </span>
-            <FormattedMessage id="app.result.success.step1-operator" defaultMessage="Qu Lili" />
+            <FormattedMessage id="app.workflow.start.user" defaultMessage="{workflow.userId}" />
           </Col>
           <Col xs={24} sm={24} md={24} lg={24} xl={12}>
             <span style={{ color: 'rgba(0, 0, 0, 0.85)' }}>
@@ -329,7 +334,7 @@ class ContractEdit extends PureComponent {
             title={
               <span style={{ fontSize: 14 }}>
                 <FormattedMessage
-                  id="app.result.success.step1-title"
+                  id="app.workflow.start.contract"
                   defaultMessage="Create project"
                 />
               </span>
@@ -340,7 +345,7 @@ class ContractEdit extends PureComponent {
             title={
               <span style={{ fontSize: 14 }}>
                 <FormattedMessage
-                  id="app.result.success.step2-title"
+                  id="app.workflow.contract.partyMain"
                   defaultMessage="Departmental preliminary review"
                 />
               </span>
@@ -351,7 +356,7 @@ class ContractEdit extends PureComponent {
             title={
               <span style={{ fontSize: 14 }}>
                 <FormattedMessage
-                  id="app.result.success.step3-title"
+                  id="app.workflow.start.contract.review"
                   defaultMessage="Financial review"
                 />
               </span>
@@ -492,7 +497,7 @@ class ContractEdit extends PureComponent {
                   name="file"
                   listType="picture-card"
                   showUploadList={false}
-                  action="http://10.80.10.151:8080/labor/contract/file/add"
+                  action="http://192.168.199.206:8080/labor/contract/file/add"
                   multiple={false}
                   className="uploadBar"
                   onChange={this.handleChange}
