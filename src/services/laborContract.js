@@ -1,6 +1,6 @@
 import request from '@/utils/request';
 
-const host = 'http://10.80.10.151:8080';
+const host = 'http://127.0.0.1:8080';
 // const host = 'http://127.0.0.1:9090';
 
 // 获取合同列表

@@ -62,41 +62,45 @@ class TemplateCreate extends PureComponent {
     });
   };
 
+  handleChange = info => {
+    const {
+      file: { status, name, response },
+    } = info;
+
+    const { form: {setFieldsValue} } = this.props;
+
+    if (status === 'done') {
+      message.success(`${name} 文件上传成功.`);
+      setFieldsValue( { filePath: response.payload.filePath } );
+    } else if (status === 'error') {
+      message.error(`${name} 文件上传失败.`);
+      setFieldsValue( { filePath: '' } );
+    }
+
+    // if( response ) {
+    //   const { payload: { officePlaceholders } } = response;
+    //   // console.log( "更新word文件参数", officePlaceholders );
+
+    //   dispatch({
+    //     type: 'purchaseTemplate/changeTemplateParams',
+    //     payload: officePlaceholders
+    //   });
+    // }
+  };
+
   render() {
     const { submitting } = this.props;
     const {
-      form: { getFieldDecorator },
-      purchaseTemplate: { templateParams },
-      dispatch,
+      form: { getFieldDecorator }
     } = this.props;
 
     // 上传表单属性
     const props = {
       name: 'file',
       multiple: false,
-      action: 'http://10.80.10.151:8080/purchase/template/upload',
+      action: 'http://127.0.0.1:8080/purchase/template/upload',
       headers: { Authorization: getJwtToken() },
-      onChange(info) {
-        const {
-          file: { status, name },
-        } = info;
-
-        if (status === 'done') {
-          message.success(`${name} 文件上传成功.`);
-        } else if (status === 'error') {
-          message.error(`${name} 文件上传失败.`);
-        }
-
-        // if( response ) {
-        //   const { payload: { officePlaceholders } } = response;
-        //   // console.log( "更新word文件参数", officePlaceholders );
-
-        //   dispatch({
-        //     type: 'purchaseTemplate/changeTemplateParams',
-        //     payload: officePlaceholders
-        //   });
-        // }
-      },
+      onChange: this.handleChange
     };
 
     return (
@@ -152,6 +156,12 @@ class TemplateCreate extends PureComponent {
                         company data or other band files
                       </p>
                     </Upload.Dragger>
+                  )}
+                </FormItem>
+
+                <FormItem>
+                  {getFieldDecorator( 'filePath' )(
+                    <Input type="hidden" />
                   )}
                 </FormItem>
 

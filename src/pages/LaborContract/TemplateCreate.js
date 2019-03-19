@@ -19,6 +19,7 @@ class TemplateCreate extends PureComponent {
     const { dispatch, form } = this.props;
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
+      // console.log( values );
       if (!err) {
         const {
           file: { name },
@@ -49,6 +50,24 @@ class TemplateCreate extends PureComponent {
     });
   };
 
+  handleUpload = info => {
+    const {
+      file: { status, name, response },
+    } = info;
+
+    const { form: {setFieldsValue} } = this.props;
+
+    if (status === 'done') {
+      message.success(`${name} 文件上传成功.`);
+      // this.setState( {file_upload_response: response.payload } );
+      setFieldsValue( { filePath: response.payload.filePath } );
+    } else if (status === 'error') {
+      message.error(`${name} 文件上传失败.`);
+      // this.setState( {file_upload_response: response.payload } );
+      setFieldsValue( { filePath: '' } );
+    }
+  };
+
   render() {
     const { submitting } = this.props;
     const {
@@ -59,19 +78,9 @@ class TemplateCreate extends PureComponent {
     const props = {
       name: 'file',
       multiple: false,
-      action: 'http://10.80.10.151:8080/labor/template/upload',
+      action: 'http://127.0.0.1:8080/labor/template/upload',
       headers: { Authorization: getJwtToken() },
-      onChange(info) {
-        const {
-          file: { status, name },
-        } = info;
-
-        if (status === 'done') {
-          message.success(`${name} 文件上传成功.`);
-        } else if (status === 'error') {
-          message.error(`${name} 文件上传失败.`);
-        }
-      },
+      onChange: this.handleUpload,
     };
 
     return (
@@ -127,6 +136,12 @@ class TemplateCreate extends PureComponent {
                         company data or other band files
                       </p>
                     </Upload.Dragger>
+                  )}
+                </FormItem>
+
+                <FormItem>
+                  {getFieldDecorator( 'filePath' )(
+                    <Input type="hidden" />
                   )}
                 </FormItem>
 

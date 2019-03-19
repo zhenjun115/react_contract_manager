@@ -146,7 +146,7 @@ class Workplace extends PureComponent {
             <Card
               className={styles.projectList}
               style={{ marginBottom: 24 }}
-              title="履行中"
+              title="归档中"
               bordered={false}
               extra={<Link to="/dashboard/workplace/contract/carryout">全部</Link>}
               loading={carryoutLoading}

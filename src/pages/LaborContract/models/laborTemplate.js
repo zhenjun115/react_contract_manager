@@ -140,7 +140,7 @@ export default {
 
     setSearchKeyword(state, action) {
       const { payload } = action;
-      console.log('设置搜索关键字', payload);
+      // console.log('设置搜索关键字', payload);
       return {
         ...state,
         keyword: payload,
