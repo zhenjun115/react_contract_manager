@@ -16,7 +16,7 @@ import {
 } from 'antd';
 import { connect } from 'dva';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import './TemplateInfo.less';
+import './ContractEdit.less';
 
 const { TabPane } = Tabs;
 const FormItem = Form.Item;
@@ -31,22 +31,22 @@ notification.config({
   duration: 3,
 });
 
-@connect(({ purchaseTemplate, loading }) => ({
-  purchaseTemplate,
-  loading: loading.models.purchaseTemplate,
+@connect(({ purchaseContract, loading }) => ({
+  purchaseContract,
+  loading: loading.models.purchaseContract,
 }))
 @Form.create()
-class TemplateInfo extends PureComponent {
+class ContractEdit extends PureComponent {
   componentDidMount() {
     const {
       dispatch,
       match: { params },
     } = this.props;
 
-    // 1.加载模版数据
+    // 1.加载合同数据
     dispatch({
-      type: 'purchaseTemplate/fetchById',
-      payload: { templateId: params.templateId },
+      type: 'purchaseContract/fetchById',
+      payload: { contractId: params.contractId },
     });
 
     // 2.加载模版参数
@@ -67,30 +67,30 @@ class TemplateInfo extends PureComponent {
   viewPageOffice = e => {
     e.preventDefault();
     const {
-      purchaseTemplate: {
-        template: { templateId },
+      purchaseContract: {
+        contract: { contractId },
       },
     } = this.props;
 
-    window.open(`http://10.80.10.151:8080/pageoffice/demoTemplate?templateId=${templateId}`);
+    window.open(`http://10.80.10.151:8080/pageoffice/demoContract?contractId=${contractId}`);
   };
 
   render() {
     const {
-      purchaseTemplate: { template },
+      purchaseContract: { contract },
     } = this.props;
 
-    const formItemLayout = {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 2 },
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 16 },
-        md: { span: 16 },
-      },
-    };
+    // const formItemLayout = {
+    //   labelCol: {
+    //     xs: { span: 24 },
+    //     sm: { span: 2 },
+    //   },
+    //   wrapperCol: {
+    //     xs: { span: 24 },
+    //     sm: { span: 16 },
+    //     md: { span: 16 },
+    //   },
+    // };
 
     const desc = (
       <div style={{ fontSize: 12, position: 'relative', left: 42 }}>
@@ -105,7 +105,7 @@ class TemplateInfo extends PureComponent {
           <a href="" onClick={this.viewPageOffice}>
             <FormattedMessage
               id="app.result.success.purchase.template.view"
-              defaultMessage={template.title}
+              defaultMessage={contract.title}
             />
             <Icon type="file-word-o" style={{ color: '#00A0E9', marginLeft: 8 }} />
           </a>
@@ -117,11 +117,11 @@ class TemplateInfo extends PureComponent {
       <PageHeaderWrapper>
         {/* <Spin spinning={{true}}> */}
         <Tabs type="card" tabPosition="right">
-          <TabPane tab="基础信息" key="1">
-            <Card bordered={false}>
+          {/* <TabPane tab="基础信息" key="1"> */}
+            {/* <Card bordered={false}>
               <Form onSubmit={this.handleSubmit} hideRequiredMark style={{ marginTop: 8 }}>
                 <FormItem {...formItemLayout} label="文件名称">
-                  <Input placeholder="请输入模版名称" value={template.title} />
+                  <Input placeholder="请输入模版名称" value={contract.title} />
                 </FormItem>
 
                 <FormItem {...formItemLayout} label="文档简介">
@@ -129,17 +129,17 @@ class TemplateInfo extends PureComponent {
                     style={{ minHeight: 32 }}
                     placeholder="请输入劳务合同模版简介"
                     rows={4}
-                    value={template.content}
+                    value={contract.content}
                   />
                 </FormItem>
 
-                {/* <FormItem {...submitFormLayout} style={{ marginTop: 16 }}>
+                <FormItem {...submitFormLayout} style={{ marginTop: 16 }}>
                   <Button type="primary" htmlType="submit">
                     保存
                   </Button>
-                </FormItem> */}
+                </FormItem>
               </Form>
-            </Card>
+            </Card> */}
 
             {/* <Card bordered={false}>
               <Form layout="vertical" hideRequiredMark>
@@ -156,8 +156,8 @@ class TemplateInfo extends PureComponent {
                 </Row>
               </Form>
             </Card> */}
-          </TabPane>
-          <TabPane tab="模版变更" key="2">
+          {/* </TabPane> */}
+          <TabPane tab="模版变更" key="1">
             <Card>
               <Timeline pending="  " reverse={false}>
                 <Timeline.Item>
@@ -178,6 +178,7 @@ class TemplateInfo extends PureComponent {
                                 id="app.result.success.purchase.template.upload-title"
                                 // defaultMessage="Departmental preliminary review"
                               />
+                              {/* { contract.conname } */}
                             </span>
                           }
                           description={desc}
@@ -193,7 +194,7 @@ class TemplateInfo extends PureComponent {
             </Card>
           </TabPane>
 
-          <TabPane tab="其他" key="3">
+          <TabPane tab="其他" key="2">
             <Card>
               <Skeleton avatar paragraph={{ rows: 4 }} />
             </Card>
@@ -204,4 +205,4 @@ class TemplateInfo extends PureComponent {
   }
 }
 
-export default TemplateInfo;
+export default ContractEdit;

@@ -26,6 +26,7 @@ export default [
       { path: '/labor_contract/view/:contractId', component: './LaborContract/ContractEdit' },
       // 采购合同模版列表页面
       { path: '/purchase_contract/template/', component: './PurchaseContract/Template' },
+      { path: '/purchase_contract/view/:contractId', component: './PurchaseContract/ContractEdit' },
 
       // 采购合同模版创建页面
       {

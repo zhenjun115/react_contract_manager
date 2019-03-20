@@ -102,6 +102,11 @@ class Contract extends Component {
     router.push('/purchase_contract/template/create');
   };
 
+  // 查看合同详情
+  viewContract = contractId => {
+    router.push(`/purchase_contract/view/${contractId}`);
+  };
+
   render() {
     const {
       form,
@@ -189,7 +194,7 @@ class Contract extends Component {
               renderItem={item => (
                 <List.Item
                   key={item.contractId}
-                  actions={[<Button type="primary">查看合同</Button>]}
+                  actions={[<Button type="primary" onClick={() => this.viewContract(item.contractId)}>查看合同</Button>]}
                   extra={<div className={styles.listItemExtra} />}
                 >
                   <List.Item.Meta

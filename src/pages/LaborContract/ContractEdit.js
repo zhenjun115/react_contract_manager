@@ -30,7 +30,7 @@ import { connect } from 'dva';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import styles from './ContractEdit.less';
 import { getJwtToken } from '@/utils/authority';
-import { createContract } from '@/services/laborContract';
+// import { createContract } from '@/services/laborContract';
 
 const { TabPane } = Tabs;
 const RadioGroup = Radio.Group;
@@ -107,10 +107,10 @@ class ContractEdit extends PureComponent {
     });
 
     // 4.查询合同流程相关信息
-    dispatch({
-      type: 'laborContract/fetchWorkflowByContractId',
-      payload: contractId,
-    });
+    // dispatch({
+    //   type: 'laborContract/fetchWorkflowByContractId',
+    //   payload: contractId,
+    // });
   }
 
   // 保存合同签约主体信息
@@ -203,7 +203,7 @@ class ContractEdit extends PureComponent {
   // 查看合同word附件文件
   viewWordFile = (e, file) => {
     e.preventDefault();
-    console.log('文件信息', file);
+    // console.log('文件信息', file);
 
     window.open(`http://10.80.10.151:8080/pageoffice/demoContractFile?fileId=${file.fileId}`);
   };
@@ -218,7 +218,7 @@ class ContractEdit extends PureComponent {
         contract,
         // status,
         workflow,
-        createContractTask,
+        // createContractTask,
       },
       // loading,
       form,

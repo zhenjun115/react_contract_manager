@@ -24,6 +24,7 @@ export default {
     // 根据模版编号获取模版
     *fetchById({ payload }, { put, call }) {
       const response = yield call(fetchContractById, payload);
+      console.log( "根据合同编号获取合同信息", response );
       yield put({
         type: 'setContract',
         payload: response.payload,

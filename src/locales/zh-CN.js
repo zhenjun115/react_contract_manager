@@ -282,7 +282,7 @@ export default {
   // 采购模版上传相关步骤
   'app.result.success.purchase.template.upload-operator': 'User',
   'app.result.success.purchase.template.upload-title': '上传模版',
-  'app.result.success.purchase.template.view.d': '看一下',
+  'app.result.success.purchase.template.view': '看一下',
   'app.result.success.purchase.template.upload-file': '文件',
 
   'app.result.success.btn-return': '返回列表',
