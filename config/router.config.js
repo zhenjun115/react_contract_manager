@@ -59,6 +59,9 @@ export default [
 
       // 合同--状态
       { path: '/contract/status/:contractId', component: './Dashboard/Status' },
+
+      // 合同--状态
+      { path: '/archive/contract/:contractId', component: './Archive/ContractDetail' },
       // 劳务合同
       {
         path: '/labor',
@@ -166,12 +169,7 @@ export default [
             path: '/archive/contract',
             name: 'contract',
             component: './Archive/ContractFile',
-          },
-          {
-            path: '/archive/template',
-            name: 'template',
-            component: './Archive/TemplateFile',
-          },
+          }
         ],
       },
       {

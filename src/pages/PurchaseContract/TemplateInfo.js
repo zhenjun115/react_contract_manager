@@ -72,7 +72,7 @@ class TemplateInfo extends PureComponent {
       },
     } = this.props;
 
-    window.open(`http://10.80.10.151:8080/pageoffice/demoTemplate?templateId=${templateId}`);
+    window.open(`http://127.0.0.1:8080/pageoffice/demoTemplate?templateId=${templateId}`);
   };
 
   render() {
